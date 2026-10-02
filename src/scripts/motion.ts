@@ -66,7 +66,115 @@ function initScrollspy() {
   sections.forEach(s => spy.observe(s));
 }
 
-// ── M2: Scroll reveal (IntersectionObserver, one-shot) ─────────────────────
+// ── Attribute-based Scroll Reveal System (data-reveal, data-stagger, data-delay) ──
+function initAttributeScrollReveal() {
+  document.documentElement.classList.add('js');
+
+  const reveals = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  const skillBars = document.querySelectorAll<HTMLElement>('.skill-bar-fill');
+  const staggerContainers = document.querySelectorAll<HTMLElement>('[data-stagger]');
+
+  if (!reveals.length && !skillBars.length && !staggerContainers.length) return;
+
+  // Progressive enhancement & accessibility guard
+  if (prefersReduced() || !('IntersectionObserver' in window)) {
+    reveals.forEach(el => el.classList.add('is-revealed'));
+    skillBars.forEach(el => el.classList.add('is-revealed'));
+    return;
+  }
+
+  // Safety fallback: ensure nothing stays hidden permanently if observer is delayed/blocked
+  setTimeout(() => {
+    document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-revealed), .skill-bar-fill:not(.is-revealed)')
+      .forEach(el => el.classList.add('is-revealed'));
+  }, 4000);
+
+  // 1. Observe containers with data-stagger
+  staggerContainers.forEach(container => {
+    const staggerMs = parseInt(container.dataset.stagger || '80', 10);
+    const isGallery = container.id === 'gallery-grid' || container.classList.contains('gallery-grid');
+
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            obs.unobserve(entry.target);
+
+            if (container.hasAttribute('data-reveal')) {
+              container.classList.add('is-revealed');
+            }
+
+            const targets = container.querySelectorAll<HTMLElement>('[data-reveal], .skill-bar-fill');
+            targets.forEach((target, index) => {
+              let delay = 0;
+              if (target.dataset.delay) {
+                delay = parseInt(target.dataset.delay, 10);
+              } else if (isGallery) {
+                // Maksimal 8 kartu beranimasi stagger sekaligus, sisanya langsung tampil
+                delay = index < 8 ? index * staggerMs : 0;
+              } else {
+                delay = index * staggerMs;
+              }
+
+              if (delay > 0) {
+                target.style.transitionDelay = `${delay}ms`;
+              }
+              target.classList.add('is-revealed');
+            });
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(container);
+  });
+
+  // 2. Observe standalone [data-reveal] elements not inside a data-stagger container
+  reveals.forEach(el => {
+    if (el.closest('[data-stagger]')) return;
+
+    if (el.dataset.delay) {
+      el.style.transitionDelay = `${el.dataset.delay}ms`;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            obs.unobserve(entry.target);
+            el.classList.add('is-revealed');
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(el);
+  });
+
+  // 3. Standalone skill bars not inside data-stagger
+  skillBars.forEach((bar, index) => {
+    if (bar.closest('[data-stagger]')) return;
+
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            obs.unobserve(entry.target);
+            bar.style.transitionDelay = `${index * 80}ms`;
+            bar.classList.add('is-revealed');
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(bar);
+  });
+}
+
+// ── M2: Legacy Scroll reveal (IntersectionObserver, one-shot) ─────────────
 function initScrollReveal() {
   const els = document.querySelectorAll('.reveal, .reveal-stagger');
   if (!els.length) return;
@@ -131,58 +239,123 @@ function initCountUp() {
   els.forEach(el => observer.observe(el));
 }
 
-// ── M6: Drag-to-scroll carousel ────────────────────────────────────────────
+// ── M6: Drag-to-scroll carousel + Auto-scroll (Pointer Events, no jump) ─────
 function initDragCarousel() {
   const carousels = document.querySelectorAll<HTMLElement>('.drag-carousel');
   carousels.forEach(el => {
-    let isDown = false;
-    let startX = 0;
-    let scrollLeft = 0;
-    let velX = 0;
-    let lastX = 0;
-    let raf = 0;
+    // ── State ───────────────────────────────────────────────────────────────
+    let isDragging     = false;
+    let dragStartX     = 0;
+    let dragScrollLeft = 0;
+    let velX           = 0;
+    let lastX          = 0;
+    let lastT          = 0;
+    let inertiaRaf     = 0;
 
-    el.addEventListener('mousedown', e => {
-      isDown = true;
-      el.classList.add('dragging');
-      startX = e.pageX - el.offsetLeft;
-      scrollLeft = el.scrollLeft;
-      lastX = e.pageX;
-      cancelAnimationFrame(raf);
-    });
-    el.addEventListener('mouseleave', () => { isDown = false; el.classList.remove('dragging'); });
-    el.addEventListener('mouseup', () => {
-      isDown = false;
-      el.classList.remove('dragging');
-      // Inertia
-      const inertia = () => {
-        if (Math.abs(velX) < 0.5) return;
-        el.scrollLeft += velX;
-        velX *= 0.92;
-        raf = requestAnimationFrame(inertia);
+    let autoRaf            = 0;
+    let isVisible          = false;
+    let userInteracting    = false;
+    let resumeTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // ── Auto-scroll (slow drift; stops at end, no hard jump) ────────────────
+    const stopAuto = () => { cancelAnimationFrame(autoRaf); autoRaf = 0; };
+    const startAuto = () => {
+      if (autoRaf || prefersReduced() || !isVisible || userInteracting) return;
+      const SPEED = 0.55; // px per frame
+      const tick = () => {
+        if (!isVisible || userInteracting || prefersReduced()) { autoRaf = 0; return; }
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        if (el.scrollLeft >= maxScroll - 1) { autoRaf = 0; return; } // stop at end, no jump
+        el.scrollLeft += SPEED;
+        autoRaf = requestAnimationFrame(tick);
       };
-      raf = requestAnimationFrame(inertia);
-    });
-    el.addEventListener('mousemove', e => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - el.offsetLeft;
-      velX = e.pageX - lastX;
-      lastX = e.pageX;
-      el.scrollLeft = scrollLeft - (x - startX);
+      autoRaf = requestAnimationFrame(tick);
+    };
+
+    // ── Interaction guards ──────────────────────────────────────────────────
+    const pauseAuto = () => {
+      userInteracting = true;
+      if (resumeTimer) clearTimeout(resumeTimer);
+      stopAuto();
+    };
+    const scheduleResume = (delay = 2000) => {
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { userInteracting = false; startAuto(); }, delay);
+    };
+
+    // ── Visibility via IntersectionObserver ─────────────────────────────────
+    new IntersectionObserver(entries => {
+      isVisible = entries[0].isIntersecting;
+      isVisible ? startAuto() : stopAuto();
+    }, { threshold: 0.15 }).observe(el);
+
+    // ── Pointer Events for mouse/pen drag ───────────────────────────────────
+    // (Touch falls through to native scroll — no manual scrollLeft for touch)
+    el.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'touch') return; // let native handle touch
+      pauseAuto();
+      cancelAnimationFrame(inertiaRaf);
+      isDragging     = true;
+      dragStartX     = e.clientX;
+      dragScrollLeft = el.scrollLeft;
+      velX           = 0;
+      lastX          = e.clientX;
+      lastT          = e.timeStamp;
+      el.setPointerCapture(e.pointerId);
+      el.classList.add('dragging');
     });
 
-    // Touch
-    let touchStartX = 0;
-    let touchScrollLeft = 0;
-    el.addEventListener('touchstart', e => {
-      touchStartX = e.touches[0].pageX;
-      touchScrollLeft = el.scrollLeft;
-    }, { passive: true });
-    el.addEventListener('touchmove', e => {
-      const dx = e.touches[0].pageX - touchStartX;
-      el.scrollLeft = touchScrollLeft - dx;
-    }, { passive: true });
+    el.addEventListener('pointermove', e => {
+      if (!isDragging || e.pointerType === 'touch') return;
+      e.preventDefault();
+      const now = e.timeStamp;
+      const dt  = now - lastT || 1;
+      velX  = (e.clientX - lastX) / dt * 16; // normalise to ~60fps
+      lastX = e.clientX;
+      lastT = now;
+      el.scrollLeft = dragScrollLeft - (e.clientX - dragStartX);
+    });
+
+    const endDrag = (e: PointerEvent) => {
+      if (!isDragging || e.pointerType === 'touch') return;
+      isDragging = false;
+      el.classList.remove('dragging');
+
+      // Inertia decay
+      cancelAnimationFrame(inertiaRaf);
+      const inertia = () => {
+        if (Math.abs(velX) < 0.3) { scheduleResume(2000); return; }
+        el.scrollLeft -= velX;
+        velX *= 0.90;
+        inertiaRaf = requestAnimationFrame(inertia);
+      };
+      inertiaRaf = requestAnimationFrame(inertia);
+    };
+    el.addEventListener('pointerup',     endDrag);
+    el.addEventListener('pointercancel', endDrag);
+
+    // ── Mouse hover (non-drag) — pause while mouse is over ──────────────────
+    el.addEventListener('mouseenter', () => { if (!isDragging) pauseAuto(); });
+    el.addEventListener('mouseleave', () => { if (!isDragging) scheduleResume(1500); });
+
+    // ── Wheel / trackpad ────────────────────────────────────────────────────
+    // Let native scroll handle it; just pause auto-scroll
+    el.addEventListener('wheel', () => { pauseAuto(); scheduleResume(2000); }, { passive: true });
+
+    // ── Touch: just guard auto-scroll, no scrollLeft override ───────────────
+    el.addEventListener('touchstart', () => pauseAuto(),        { passive: true });
+    el.addEventListener('touchend',   () => scheduleResume(2000), { passive: true });
+
+    // ── Keyboard nav (left/right arrows when focused) ────────────────────────
+    el.setAttribute('tabindex', el.getAttribute('tabindex') ?? '0');
+    el.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      pauseAuto();
+      const cardWidth = (el.querySelector<HTMLElement>(':scope > *')?.offsetWidth ?? 300) + 24;
+      el.scrollBy({ left: e.key === 'ArrowRight' ? cardWidth : -cardWidth, behavior: 'smooth' });
+      scheduleResume(3000);
+    });
   });
 }
 
@@ -488,6 +661,7 @@ function boot() {
   initScrollProgress();
   initNavbarShrink();
   initScrollspy();
+  initAttributeScrollReveal();
   initScrollReveal();
   initHeroSplit();
   initCountUp();

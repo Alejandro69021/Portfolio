@@ -35,15 +35,62 @@
 }
 
 /* Scroll offset for fixed navbar (72px header height) */
+/* Scroll offset for fixed navbar (72px header height) */
 #hero, #karya, #peran, #tentang, #rekam-jejak, #kontak {
   scroll-margin-top: 72px;
 }
 
-/* Scroll reveal */
+/* ── Attribute-based Scroll Reveal System ─────────────────── */
+/* Progressive Enhancement: by default (no JS), elements are fully visible */
+[data-reveal] {
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+/* When JS is loaded, hide unrevealed elements */
+html.js [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+}
+html.js [data-reveal="fade-up"]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(32px);
+}
+html.js [data-reveal="slide-left"]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateX(-36px);
+}
+html.js [data-reveal="slide-right"]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateX(36px);
+}
+html.js [data-reveal="fade"]:not(.is-revealed) {
+  opacity: 0;
+  transform: none;
+}
+
+/* Revealed state (only transform and opacity) */
+[data-reveal].is-revealed {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Skill bar fill animation (scaleX with transform-origin: left) */
+.skill-bar-fill {
+  transform-origin: left;
+  transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+html.js .skill-bar-fill:not(.is-revealed) {
+  transform: scaleX(0);
+}
+html.js .skill-bar-fill.is-revealed {
+  transform: scaleX(1);
+}
+
+/* Backward compatibility for .reveal / .reveal-stagger */
 .reveal { opacity:0; transform:translateY(24px); transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out); will-change:opacity,transform; }
 .reveal.is-visible { opacity:1; transform:translateY(0); }
-
-/* Stagger children */
 .reveal-stagger > * { opacity:0; transform:translateY(20px); transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out); will-change:opacity,transform; }
 .reveal-stagger.is-visible > * { opacity:1; transform:translateY(0); }
 .reveal-stagger.is-visible > *:nth-child(1){transition-delay:0ms}
@@ -83,10 +130,15 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 #mobile-menu.is-open { max-height: 500px; }
 #mobile-menu.hidden { display: block !important; }
 
-/* Card hover lift */
+/* Card hover lift & arrow shift */
 .card-hover { transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out); }
 .card-hover:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(28,25,23,0.08); }
 .card-hover:focus-visible { transform:translateY(-4px); box-shadow:0 0 0 2px var(--color-terracotta); outline:none; }
+.card-hover .card-arrow,
+.card-hover .arrow-shift { display:inline-block; transition:transform var(--dur-fast) var(--ease-out); }
+.card-hover:hover .card-arrow,
+.card-hover:hover .arrow-shift { transform:translate(3px, -3px); }
+.card-hover:hover .card-arrow-x { transform:translateX(4px); }
 
 /* Card image zoom */
 .card-img-wrap { overflow:hidden; }
@@ -105,13 +157,40 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 .marquee-wrap:hover .marquee-track { animation-play-state:paused; }
 @keyframes marquee-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-/* Drag carousel */
-.drag-carousel { cursor:grab; user-select:none; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
-.drag-carousel.dragging { cursor:grabbing; }
-.drag-carousel > * { scroll-snap-align:start; }
+/* Drag carousel — native scroll first */
+.drag-carousel {
+  cursor: grab;
+  user-select: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.drag-carousel.dragging {
+  cursor: grabbing;
+  /* Disable snap while dragging so cards don't fight pointer */
+  scroll-snap-type: none;
+}
+/* Each card snaps at its start edge */
+.drag-carousel > * {
+  scroll-snap-align: start;
+}
 
-/* FLIP gallery filter */
-.gallery-item { transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out); will-change:transform,opacity; }
+/* Carousel card — explicit transitions only (no transition-all) */
+.carousel-card {
+  contain: layout paint;
+  transition:
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform    200ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow   200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* FLIP gallery filter — contain for render perf */
+.gallery-item {
+  contain: layout paint;
+  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+  will-change: transform, opacity;
+}
 .gallery-item.flip-hidden { opacity:0; transform:scale(0.92); pointer-events:none; }
 
 /* Lightbox */
@@ -164,10 +243,21 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  html.js [data-reveal],
+  html.js .skill-bar-fill,
   .reveal, .reveal-stagger > *, .hero-word {
     opacity: 1 !important;
     transform: none !important;
     transition: opacity 150ms ease !important;
+  }
+  .card-hover:hover,
+  .card-hover:focus-visible {
+    transform: none !important;
+  }
+  .card-hover:hover .card-arrow,
+  .card-hover:hover .arrow-shift,
+  .card-hover:hover .card-arrow-x {
+    transform: none !important;
   }
   .marquee-track { animation: none; }
   #page-loader { display: none !important; }

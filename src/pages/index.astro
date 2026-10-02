@@ -380,15 +380,14 @@ try {
     </section>
 
     <!-- HORIZONTAL PHOTO STRIP with drag-carousel -->
-    <section class="border-y border-[#E7E5E4] py-8 bg-[#FBFBF9] overflow-hidden reveal">
-      <div class="max-w-6xl mx-auto px-6 mb-4 flex justify-between items-center">
+    <section class="border-y border-[#E7E5E4] py-8 bg-[#FBFBF9] overflow-hidden" data-reveal="fade-up">
+      <div class="max-w-6xl mx-auto px-6 mb-2">
         <span class="text-xs font-mono text-[#78716C] uppercase tracking-widest">Dokumentasi Lapangan &amp; Event Sinematik</span>
-        <span class="text-xs font-mono text-[#EA580C]">← Geser Horizontal →</span>
       </div>
       
-      <div class="flex space-x-6 overflow-x-auto px-6 pb-4 scrollbar-thin drag-carousel">
+      <div class="flex space-x-6 overflow-x-auto px-6 pt-4 pb-6 scrollbar-thin drag-carousel">
         {photoStrip.map((photo, i) => (
-          <div class="flex-none w-72 sm:w-80 group relative bg-[#E7E5E4]/40 border border-[#E7E5E4] p-5 rounded-none transition-all hover:border-[#EA580C] card-hover">
+          <div class="flex-none w-72 sm:w-80 group relative bg-[#E7E5E4]/40 border border-[#E7E5E4] p-5 rounded-none hover:border-[#EA580C] card-hover carousel-card">
             <div class="h-44 bg-[#1C1917]/5 flex flex-col justify-between p-4 border border-[#E7E5E4] relative overflow-hidden">
               <span class="text-4xl font-serif font-bold text-[#1C1917]/10 group-hover:text-[#EA580C]/20 transition-colors">0{i+1}</span>
               <div class="text-xs font-mono text-[#78716C]">{photo.gear}</div>
@@ -403,9 +402,10 @@ try {
     </section>
 
     <!-- PIE CHART IDENTITY SECTION -->
-    <section id="peran" class="max-w-6xl mx-auto px-6 reveal">
-      <div class="space-y-4 mb-12">
-        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Identitas Tiga Lensa</span>
+    <section id="peran" class="max-w-6xl mx-auto px-6">
+      <div class="space-y-4 mb-12" data-reveal="fade-up">
+        <div class="font-serif text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1C1917] lowercase">peran.</div>
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Identitas Tiga Lensa</span>
         <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Konsep Hibrida Tiga Lensa Keahlian</h2>
         <p class="text-[#78716C] max-w-2xl">
           Arahkan kursor atau ketuk sektor diagram lingkaran di bawah untuk menjelajahi rincian peran dan kontribusi nyata saya.
@@ -415,15 +415,16 @@ try {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center bg-[#E7E5E4]/20 border border-[#E7E5E4] p-8 md:p-12">
         
         <!-- SVG Pie Chart -->
-        <div class="lg:col-span-5 flex flex-col items-center justify-center relative">
+        <div class="lg:col-span-5 flex flex-col items-center justify-center relative" data-reveal="slide-left">
           <div class="w-64 h-64 md:w-80 md:h-80 relative">
-            <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90 drop-shadow-sm">
+            <svg viewBox="-10 -10 120 120" class="w-full h-full transform -rotate-90 drop-shadow-sm overflow-visible">
               <!-- 40% Health Promoter (#EA580C) : 0 to 144 deg -->
               <path
                 id="slice-health"
                 d="M 50 50 L 50 0 A 50 50 0 0 1 97.55 65.45 Z"
                 fill="#EA580C"
-                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 transform origin-center slice-btn"
+                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 slice-btn"
+                style="transform-origin: 50px 50px;"
                 data-target="role-health"
               ></path>
               <!-- 35% Visual Storyteller (#1C1917) : 144 to 270 deg -->
@@ -431,7 +432,8 @@ try {
                 id="slice-storyteller"
                 d="M 50 50 L 97.55 65.45 A 50 50 0 0 1 0 50 Z"
                 fill="#1C1917"
-                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 transform origin-center slice-btn"
+                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 slice-btn"
+                style="transform-origin: 50px 50px;"
                 data-target="role-storyteller"
               ></path>
               <!-- 25% Health-Tech Builder (#78716C) : 270 to 360 deg -->
@@ -439,7 +441,8 @@ try {
                 id="slice-builder"
                 d="M 50 50 L 0 50 A 50 50 0 0 1 50 0 Z"
                 fill="#78716C"
-                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 transform origin-center slice-btn"
+                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 slice-btn"
+                style="transform-origin: 50px 50px;"
                 data-target="role-builder"
               ></path>
             </svg>
@@ -465,7 +468,7 @@ try {
         </div>
 
         <!-- Role Detail Display Panel -->
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-7" data-reveal="slide-right">
           {roles.map((r, index) => (
             <div 
               id={`role-${r.id}`} 
@@ -502,22 +505,22 @@ try {
     </section>
 
     <!-- INTERACTIVE SKILL BAR CHART -->
-    <section class="max-w-6xl mx-auto px-6 space-y-12 reveal">
-      <div class="space-y-4">
-        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Tingkat Kompetensi</span>
+    <section class="max-w-6xl mx-auto px-6 space-y-12">
+      <div class="space-y-4" data-reveal="fade-up">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Tingkat Kompetensi</span>
         <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Matriks Keahlian Lintas Disiplin</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 reveal-stagger">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8" data-stagger="80">
         {skillChart.map((skill) => (
-          <div class="space-y-2 border-b border-[#E7E5E4] pb-4">
+          <div class="space-y-2 border-b border-[#E7E5E4] pb-4" data-reveal="fade-up">
             <div class="flex justify-between items-center text-sm">
               <span class="font-medium text-[#1C1917]">{skill.name}</span>
               <span class="font-mono text-xs text-[#EA580C] font-semibold">{skill.level}%</span>
             </div>
             <div class="w-full h-2 bg-[#E7E5E4] overflow-hidden relative">
               <div 
-                class="h-full bg-[#1C1917] transition-all duration-1000 ease-out" 
+                class="skill-bar-fill h-full bg-[#1C1917]" 
                 style={`width: ${skill.level}%`}
               ></div>
             </div>
@@ -527,15 +530,16 @@ try {
     </section>
 
     <!-- FEATURED PROJECTS (Editorial Case Studies) -->
-    <section id="karya" class="max-w-6xl mx-auto px-6 space-y-12 reveal">
-      <div class="space-y-4">
-        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Studi Kasus Unggulan</span>
+    <section id="karya" class="max-w-6xl mx-auto px-6 space-y-12">
+      <div class="space-y-4" data-reveal="fade-up">
+        <div class="font-serif text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1C1917] lowercase">karya.</div>
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Studi Kasus Unggulan</span>
         <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Karya Health-Tech &amp; Inisiatif</h2>
       </div>
 
-      <div class="space-y-16 reveal-stagger">
+      <div class="space-y-16" data-stagger="120">
         {featuredProjects.map((proj) => (
-          <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border border-[#E7E5E4] p-8 md:p-10 bg-[#FBFBF9] hover:border-[#EA580C] transition-all card-hover">
+          <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border border-[#E7E5E4] p-8 md:p-10 bg-[#FBFBF9] hover:border-[#EA580C] transition-all card-hover" data-reveal="fade-up">
             
             <div class="lg:col-span-7 space-y-6">
               <div class="space-y-2">
@@ -576,9 +580,9 @@ try {
                     href={proj.url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EA580C] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#1C1917] transition-all btn-micro"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EA580C] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#1C1917] transition-all btn-micro group"
                   >
-                    Buka App Live ↗
+                    Buka App Live <span class="card-arrow inline-block">↗</span>
                   </a>
                 )}
 
@@ -645,16 +649,17 @@ try {
     </section>
 
     <!-- RANDOM FACTS & GEAR GRID -->
-    <section id="tentang" class="max-w-6xl mx-auto px-6 space-y-12 reveal">
-      <div class="space-y-4">
-        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Fakta Ringkas &amp; Perangkat</span>
+    <section id="tentang" class="max-w-6xl mx-auto px-6 space-y-12" style="content-visibility:auto;contain-intrinsic-size:auto 600px">
+      <div class="space-y-4" data-reveal="fade-up">
+        <div class="font-serif text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1C1917] lowercase">tentang.</div>
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Fakta Ringkas &amp; Perangkat</span>
         <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Di Luar Kode &amp; Lensa</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         
         <!-- Column 1: Facts -->
-        <div class="space-y-6 bg-[#E7E5E4]/20 border border-[#E7E5E4] p-8">
+        <div class="space-y-6 bg-[#E7E5E4]/20 border border-[#E7E5E4] p-8 card-hover" data-reveal="slide-left">
           <h3 class="font-serif text-2xl font-bold text-[#1C1917] border-b border-[#E7E5E4] pb-4">Profil &amp; Fakta Personal</h3>
           
           <div class="space-y-4">
@@ -675,7 +680,7 @@ try {
         </div>
 
         <!-- Column 2: Camera Gear -->
-        <div class="space-y-6 bg-[#1C1917] text-[#FBFBF9] p-8">
+        <div class="space-y-6 bg-[#1C1917] text-[#FBFBF9] p-8 card-hover" data-reveal="slide-right">
           <h3 class="font-serif text-2xl font-bold border-b border-gray-800 pb-4 text-[#FBFBF9]">Amunisi Gear &amp; Perangkat</h3>
 
           <div class="space-y-4 text-xs font-mono">
@@ -707,14 +712,15 @@ try {
     </section>
 
     <!-- HALL OF RECORD (Filterable Gallery) -->
-    <section id="rekam-jejak" class="max-w-6xl mx-auto px-6 space-y-8 reveal">
-      <div class="space-y-4">
-        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Rekam Jejak Event</span>
+    <section id="rekam-jejak" class="max-w-6xl mx-auto px-6 space-y-8" style="content-visibility:auto;contain-intrinsic-size:auto 900px">
+      <div class="space-y-4" data-reveal="fade-up">
+        <div class="font-serif text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1C1917] lowercase">galeri.</div>
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Rekam Jejak Event</span>
         <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Galeri Liputan &amp; Dokumentasi</h2>
       </div>
 
       <!-- Filter Buttons -->
-      <div class="flex flex-wrap gap-2 border-b border-[#E7E5E4] pb-4" role="group" aria-label="Filter kategori galeri">
+      <div class="flex flex-wrap gap-2 border-b border-[#E7E5E4] pb-4" role="group" aria-label="Filter kategori galeri" data-reveal="fade-up" data-delay="80">
         <button class="filter-btn active px-4 py-2 border border-[#1C1917] bg-[#1C1917] text-white text-xs font-mono uppercase transition-all" data-filter="all" aria-pressed="true">
           Semua Event
         </button>
@@ -726,10 +732,11 @@ try {
       </div>
 
       <!-- Gallery Grid -->
-      <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative">
+      <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative" data-stagger="60">
         {galleryEvents.map((ev) => (
           <div 
-            class="gallery-item group bg-[#E7E5E4]/20 border border-[#E7E5E4] p-6 space-y-4 cursor-pointer hover:border-[#EA580C] transition-all card-hover"
+            class="gallery-item group bg-[#E7E5E4]/20 border border-[#E7E5E4] p-6 space-y-4 cursor-pointer hover:border-[#EA580C] card-hover"
+            data-reveal="fade-up"
             data-category={ev.cat}
             data-title={ev.title}
             data-roles={ev.roles}
@@ -741,7 +748,7 @@ try {
           >
             <div class="flex justify-between items-start">
               <span class="text-[10px] font-mono uppercase bg-[#EA580C]/10 text-[#EA580C] px-2 py-0.5">{ev.cat}</span>
-              <span class="text-xs font-mono text-[#78716C]">↗</span>
+              <span class="card-arrow text-xs font-mono text-[#78716C]">↗</span>
             </div>
 
             <h4 class="font-serif font-bold text-lg text-[#1C1917] group-hover:text-[#EA580C] transition-colors">
@@ -759,12 +766,15 @@ try {
     </section>
 
     <!-- CONTACT SECTION (Netlify Form Ready) -->
-    <section id="kontak" class="max-w-6xl mx-auto px-6 reveal">
-      <div class="bg-[#1C1917] text-[#FBFBF9] p-8 md:p-16 border border-[#1C1917] grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <section id="kontak" class="max-w-6xl mx-auto px-6" style="content-visibility:auto;contain-intrinsic-size:auto 700px">
+      <div class="bg-[#1C1917] text-[#FBFBF9] p-8 md:p-16 border border-[#1C1917] grid grid-cols-1 lg:grid-cols-12 gap-12" data-reveal="fade-up">
         
-        <div class="lg:col-span-5 space-y-6">
-          <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Mulai Kolaborasi</span>
-          <h2 class="font-serif text-3xl md:text-5xl font-normal text-white">Mari Bekerja Sama.</h2>
+        <div class="lg:col-span-5 space-y-6" data-reveal="slide-left">
+          <div class="space-y-2">
+            <div class="font-serif text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white lowercase">kontak.</div>
+            <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Mulai Kolaborasi</span>
+            <h2 class="font-serif text-3xl md:text-4xl font-normal text-white">Mari Bekerja Sama.</h2>
+          </div>
           <p class="text-gray-400 text-sm leading-relaxed">
             Terbuka untuk konsultasi promosi kesehatan, otomatisasi laporan surveilans, serta dokumentasi sinematik event olahraga/kampus.
           </p>
@@ -777,7 +787,7 @@ try {
           </div>
         </div>
 
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-7" data-reveal="slide-right">
           <form 
             name="contact" 
             method="POST" 
