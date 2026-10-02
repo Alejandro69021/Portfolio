@@ -181,16 +181,52 @@ let randomFacts = defaultRandomFacts;
 let eventCategories: string[] = ['Olahraga / Race', 'Kampus UNY', 'Medis'];
 let navPages: Array<{ title: string; slug: string }> = [];
 
-try {
-  const supabase = getPublicSupabase();
+interface HomeCache {
+  settingsRes: any;
+  projectsRes: any;
+  eventsRes: any;
+  categoriesRes: any;
+  navPagesRes: any;
+  timestamp: number;
+}
+const CACHE_TTL_MS = 60 * 1000;
+const g = globalThis as unknown as { __homeCache?: HomeCache };
 
-  const [settingsRes, projectsRes, eventsRes, categoriesRes, navPagesRes] = await Promise.all([
-    supabase.from('site_settings').select('data').eq('id', 1).maybeSingle(),
-    supabase.from('projects').select('*').eq('status', 'published').order('sort_order', { ascending: true }),
-    supabase.from('events').select('*, event_categories(name)').eq('status', 'published').order('sort_order', { ascending: true }),
-    supabase.from('event_categories').select('name').order('sort_order', { ascending: true }),
-    supabase.from('pages').select('title, slug').eq('status', 'published').eq('show_in_nav', true).order('nav_order', { ascending: true })
-  ]);
+try {
+  let cache = g.__homeCache;
+  const isFresh = cache && (Date.now() - cache.timestamp < CACHE_TTL_MS);
+
+  let settingsRes = cache?.settingsRes;
+  let projectsRes = cache?.projectsRes;
+  let eventsRes = cache?.eventsRes;
+  let categoriesRes = cache?.categoriesRes;
+  let navPagesRes = cache?.navPagesRes;
+
+  if (!isFresh) {
+    const supabase = getPublicSupabase();
+    const fetched = await Promise.all([
+      supabase.from('site_settings').select('data').eq('id', 1).maybeSingle(),
+      supabase.from('projects').select('*').eq('status', 'published').order('sort_order', { ascending: true }),
+      supabase.from('events').select('*, event_categories(name)').eq('status', 'published').order('sort_order', { ascending: true }),
+      supabase.from('event_categories').select('name').order('sort_order', { ascending: true }),
+      supabase.from('pages').select('title, slug').eq('status', 'published').eq('show_in_nav', true).order('nav_order', { ascending: true })
+    ]);
+
+    settingsRes = fetched[0];
+    projectsRes = fetched[1];
+    eventsRes = fetched[2];
+    categoriesRes = fetched[3];
+    navPagesRes = fetched[4];
+
+    g.__homeCache = {
+      settingsRes,
+      projectsRes,
+      eventsRes,
+      categoriesRes,
+      navPagesRes,
+      timestamp: Date.now()
+    };
+  }
 
   if (navPagesRes?.data) {
     navPages = navPagesRes.data;
@@ -266,8 +302,8 @@ try {
 
       <!-- Desktop Nav -->
       <nav id="main-nav" class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-[#78716C]" aria-label="Navigasi utama">
-        <a href="#karya" class="nav-link hover:text-[#1C1917] transition-colors">Karya</a>
         <a href="#peran" class="nav-link hover:text-[#1C1917] transition-colors">Peran &amp; Skill</a>
+        <a href="#karya" class="nav-link hover:text-[#1C1917] transition-colors">Karya</a>
         <a href="#tentang" class="nav-link hover:text-[#1C1917] transition-colors">Tentang &amp; Gear</a>
         <a href="#rekam-jejak" class="nav-link hover:text-[#1C1917] transition-colors">Galeri Event</a>
         {navPages.map((np) => (
@@ -316,8 +352,8 @@ try {
       aria-hidden="true"
     >
       <nav class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm font-medium text-[#78716C]" aria-label="Navigasi mobile">
-        <a href="#karya" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Karya</a>
         <a href="#peran" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Peran &amp; Skill</a>
+        <a href="#karya" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Karya</a>
         <a href="#tentang" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Tentang &amp; Gear</a>
         <a href="#rekam-jejak" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Galeri Event</a>
         {navPages.map((np) => (
@@ -334,48 +370,156 @@ try {
 
   <main class="space-y-24 md:space-y-32 pb-24 pt-[72px]">
     
-    <!-- HERO SECTION -->
-    <section id="hero" class="max-w-6xl mx-auto px-6 pt-16 md:pt-24 space-y-10">
-      <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#E7E5E4]/50 border border-[#E7E5E4] text-xs font-mono text-[#78716C] rounded-full">
-        <span class="w-2 h-2 rounded-full bg-[#EA580C] animate-pulse"></span>
-        Terbah, Pengasih, Kulon Progo, DIY
+    <!-- HERO SECTION (3 Columns Editorial: Text Left, Center Split Image, Text Right) -->
+    <section id="hero" class="relative max-w-6xl mx-auto px-6 pt-8 md:pt-14 pb-8 overflow-hidden">
+      <!-- Background Code Snippets & Terms (Faint decoration, Fira Code font) -->
+      <div class="hero-code-bg absolute inset-0 pointer-events-none select-none overflow-hidden opacity-[0.05] font-mono text-[11px] sm:text-xs leading-loose text-[#1C1917] z-0" aria-hidden="true">
+        <div class="absolute top-2 left-2 max-w-xs whitespace-pre">
+          {`// Surveillance & Health Data\nconst cases = await dinkes.stream();\nconst OR = (a * d) / (b * c);\ninterface PromkesAdvocacy {\n  scope: 'Kulon Progo';\n  p_value: number;\n}`}
+        </div>
+        <div class="absolute bottom-16 left-4 max-w-xs whitespace-pre hidden md:block">
+          {`Puskesmas.aggregate({\n  filter: 'preventive',\n  coverage: 0.95\n});\n// Target: Universal Health Metric`}
+        </div>
+        <div class="absolute top-2 right-2 max-w-xs whitespace-pre text-right">
+          {`// Visual & Cinema Pipeline\nimport { Camera } from '@sony/a7iv';\nconst lens = '35mm f/1.4 GM';\nconst profile = 'S-Log3 / 24fps';\ncolorGrade.export('Rec.709');`}
+        </div>
+        <div class="absolute bottom-16 right-4 max-w-xs whitespace-pre text-right hidden md:block">
+          {`git commit -m "feat: health GIS map"\nexport default function Story() {\n  return <Narrative impact={true} />;\n}`}
+        </div>
+        <div class="absolute bottom-3 left-1/2 -translate-x-1/2 text-center whitespace-pre text-[10px] text-[#78716C] hidden sm:block">
+          {`/* Muhammad Fadhil Al Wafie (Walex) • Promosi Kesehatan 40% • Visual 35% • Tech 25% */`}
+        </div>
       </div>
 
-      <!-- Hero headline with split-text -->
-      <div class="space-y-6 max-w-4xl">
-        <h1 id="hero-headline" class="font-serif text-4xl sm:text-6xl md:text-7xl font-normal leading-[1.15] text-[#1C1917]">
-          <span class="hero-word">Menerjemahkan</span>
-          <span class="hero-word">Data</span>
-          <span class="hero-word">&</span>
-          <span class="hero-word">Narasi</span>
-          <span class="hero-word">Visual</span>
-          <span class="hero-word">Menjadi</span>
-          <span class="hero-word italic text-[#EA580C]">Solusi</span>
-          <span class="hero-word italic text-[#EA580C]">Berdampak.</span>
-        </h1>
-        <p class="text-lg md:text-xl text-[#78716C] leading-relaxed max-w-2xl font-normal">
-          Saya <strong class="text-[#1C1917] font-semibold">Muhammad Fadhil Al Wafie (Walex)</strong>. Mahasiswa Promosi Kesehatan UNY yang memadukan komunikasi edukasi kesehatan, dokumentasi sinematik, dan pengembangan teknologi surveilans.
-        </p>
+      <!-- Top Tagline Bar -->
+      <div class="relative z-10 flex items-center justify-end pb-5 border-b border-[#E7E5E4]/80">
+        <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider hidden sm:block">
+          Portfolio Editorial &bull; Muhammad Fadhil Al Wafie (Walex)
+        </div>
       </div>
 
-      <!-- Quick Metrics Strip with count-up -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-[#E7E5E4] text-left reveal-stagger">
-        <div>
-          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="40%">40%</div>
-          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Promotor Kesehatan</div>
+      <!-- 3-Column Grid Composition -->
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center pt-8 md:pt-12">
+        
+        <!-- Left Column: Promosi Kesehatan & Data -->
+        <div class="hero-col-left lg:col-span-4 order-2 lg:order-1 flex flex-col justify-center space-y-4 text-left">
+          <span class="text-xs font-mono uppercase tracking-widest text-[#78716C] font-semibold block">01 / SISI SAINS &amp; DATA</span>
+          <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#1C1917] leading-[1.15]">
+            Promosi Kesehatan <span class="italic text-[#EA580C]">&amp;</span> Data.
+          </h1>
+          <p class="text-base text-[#78716C] leading-relaxed">
+            Menerjemahkan data kesehatan menjadi intervensi nyata bagi masyarakat.
+          </p>
         </div>
-        <div>
-          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="20+">20+</div>
-          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Major Event Photographed</div>
+
+        <!-- Center Column: Split Face (clip-path) -->
+        <div class="lg:col-span-4 order-1 lg:order-2 flex flex-col items-center justify-center relative my-2 lg:my-0">
+          <div
+            id="hero-face-container"
+            class="block relative mx-auto select-none cursor-pointer w-full max-w-[280px] sm:max-w-[320px]"
+          >
+            <div
+              id="hero-face"
+              class="relative w-full overflow-hidden h-[360px] sm:h-[420px] lg:h-[440px] rounded-xs shadow-xs"
+              role="region"
+              aria-label="Interaktif: Belahan wajah foto dan ilustrasi Muhammad Fadhil Al Wafie"
+            >
+              <!-- Photo layer (left half by default) -->
+              <img
+                id="hero-img-photo"
+                src="/hero-photo.webp"
+                alt="Muhammad Fadhil Al Wafie — foto asli"
+                class="hero-img hero-img-photo"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                width="600"
+                height="750"
+                draggable="false"
+              />
+              <!-- Art layer (right half by default) -->
+              <img
+                id="hero-img-art"
+                src="/hero-art.webp"
+                alt="Muhammad Fadhil Al Wafie — ilustrasi"
+                class="hero-img hero-img-art"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                width="600"
+                height="750"
+                draggable="false"
+              />
+              <!-- Seam accent line -->
+              <div id="hero-seam" class="hero-seam"></div>
+            </div>
+          </div>
+
+          <div class="text-[11px] font-mono text-[#78716C] mt-3 tracking-wider text-center flex items-center justify-center gap-1.5">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#EA580C]"></span>
+            <span>Ketuk wajah atau pilih sisi di bawah</span>
+          </div>
+
+          <!-- Mobile Quick Switcher Chips (HP / Mobile touch friendly) -->
+          <div class="flex items-center justify-center gap-2 mt-3 lg:hidden" role="group" aria-label="Pilih belahan identitas hero">
+            <button
+              id="hero-btn-sains"
+              type="button"
+              class="px-3 py-1.5 text-[11px] font-mono border border-[#E7E5E4] rounded-full transition-all flex items-center gap-1.5 bg-[#FBFBF9] text-[#1C1917] active:scale-95 shadow-xs"
+              aria-label="Lihat Sisi Sains & Data"
+            >
+              <span class="chip-dot inline-block w-1.5 h-1.5 rounded-full bg-[#EA580C]"></span>
+              <span>Sains & Data</span>
+            </button>
+            <button
+              id="hero-btn-reset"
+              type="button"
+              class="px-2.5 py-1.5 text-[11px] font-mono border border-[#E7E5E4] rounded-full transition-all text-[#78716C] active:scale-95 bg-[#FBFBF9] shadow-xs"
+              aria-label="Tampilkan kedua belahan 50/50"
+              title="Reset ke 50/50"
+            >
+              50 / 50
+            </button>
+            <button
+              id="hero-btn-tekno"
+              type="button"
+              class="px-3 py-1.5 text-[11px] font-mono border border-[#E7E5E4] rounded-full transition-all flex items-center gap-1.5 bg-[#FBFBF9] text-[#1C1917] active:scale-95 shadow-xs"
+              aria-label="Lihat Sisi Kreatif & Tekno"
+            >
+              <span class="chip-dot inline-block w-1.5 h-1.5 rounded-full bg-[#1C1917]"></span>
+              <span>Visual & Tekno</span>
+            </button>
+          </div>
         </div>
-        <div>
-          <div class="font-serif text-3xl font-bold text-[#1C1917]">v2.4</div>
-          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">SISE Dinkes App</div>
+
+        <!-- Right Column: Visual Storyteller & Tech -->
+        <div class="hero-col-right lg:col-span-4 order-3 lg:order-3 flex flex-col justify-center space-y-4 text-left lg:text-right">
+          <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] font-semibold block">02 / SISI KREATIF &amp; TEKNO</span>
+          <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#1C1917] leading-[1.15]">
+            Visual Storyteller <span class="italic text-[#EA580C]">&amp;</span> Tech.
+          </h2>
+          <p class="text-base text-[#78716C] leading-relaxed">
+            Merekam momen prestisius dan membangun ekosistem digital yang berdampak.
+          </p>
         </div>
-        <div>
-          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="95%">95%</div>
-          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Health Advocacy Rating</div>
-        </div>
+
+      </div>
+
+      <!-- Scroll Down Button -->
+      <div class="pt-10 pb-6 flex flex-col items-center justify-center text-center relative z-10">
+        <a
+          href="#peran"
+          id="hero-scroll-down"
+          class="group inline-flex flex-col items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#78716C] hover:text-[#EA580C] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C] p-2 rounded"
+          aria-label="Scroll ke bagian Peran & Skill"
+        >
+          <span class="tracking-widest">Jelajahi Lebih Lanjut</span>
+          <span class="w-9 h-9 rounded-full border border-[#E7E5E4] group-hover:border-[#EA580C] flex items-center justify-center transition-all duration-300 hero-arrow-pulse group-hover:translate-y-1 bg-[#FBFBF9]/80 backdrop-blur-sm shadow-sm">
+            <svg class="w-4 h-4 text-[#1C1917] group-hover:text-[#EA580C] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </span>
+        </a>
       </div>
     </section>
 
@@ -403,13 +547,33 @@ try {
 
     <!-- PIE CHART IDENTITY SECTION -->
     <section id="peran" class="max-w-6xl mx-auto px-6">
-      <div class="space-y-4 mb-12" data-reveal="fade-up">
+      <div class="space-y-4 mb-10" data-reveal="fade-up">
         <div class="font-serif text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1C1917] lowercase">peran.</div>
         <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Identitas Tiga Lensa</span>
         <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Konsep Hibrida Tiga Lensa Keahlian</h2>
         <p class="text-[#78716C] max-w-2xl">
           Arahkan kursor atau ketuk sektor diagram lingkaran di bawah untuk menjelajahi rincian peran dan kontribusi nyata saya.
         </p>
+      </div>
+
+      <!-- Quick Metrics Strip (dipindah dari hero) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 pb-10 border-b border-[#E7E5E4] text-left reveal-stagger">
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="40%">40%</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Promotor Kesehatan</div>
+        </div>
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="20+">20+</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Major Event Photographed</div>
+        </div>
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]">v2.4</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">SISE Dinkes App</div>
+        </div>
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="95%">95%</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Health Advocacy Rating</div>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center bg-[#E7E5E4]/20 border border-[#E7E5E4] p-8 md:p-12">
@@ -877,20 +1041,20 @@ try {
   </footer>
 
   <!-- MODAL LIGHTBOX GALLERIES -->
-  <div id="gallery-modal" class="fixed inset-0 z-50 items-center justify-center p-4 hidden" aria-modal="true" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-desc">
+  <div id="gallery-modal" class="fixed inset-0 z-50 items-center justify-center p-4 sm:p-6 hidden" aria-modal="true" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-desc">
     <!-- Backdrop -->
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" aria-hidden="true"></div>
     <!-- Content -->
-    <div class="lightbox-inner bg-[#FBFBF9] border border-[#E7E5E4] max-w-xl w-full p-8 space-y-6 relative z-10 mx-12">
-      <button id="close-modal" class="absolute top-4 right-4 text-xl font-mono font-bold text-[#1C1917] hover:text-[#EA580C]" aria-label="Tutup">✕</button>
+    <div class="lightbox-inner bg-[#FBFBF9] border border-[#E7E5E4] max-w-xl w-full p-5 sm:p-8 space-y-5 sm:space-y-6 relative z-10 mx-auto">
+      <button id="close-modal" class="absolute top-3 right-3 text-xl font-mono font-bold text-[#1C1917] hover:text-[#EA580C] w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#E7E5E4]/50 transition-colors" aria-label="Tutup">✕</button>
       
       <!-- Keyboard nav arrows (outside the inner box) -->
       <div class="space-y-2">
         <span id="modal-cat" class="text-xs font-mono uppercase bg-[#EA580C]/10 text-[#EA580C] px-2.5 py-1 inline-block">CATEGORY</span>
-        <h3 id="modal-title" class="font-serif text-2xl font-bold text-[#1C1917]">Event Title</h3>
+        <h3 id="modal-title" class="font-serif text-xl sm:text-2xl font-bold text-[#1C1917]">Event Title</h3>
       </div>
 
-      <p id="modal-desc" class="text-sm text-[#78716C] leading-relaxed">Description...</p>
+      <p id="modal-desc" class="text-xs sm:text-sm text-[#78716C] leading-relaxed">Description...</p>
 
       <div class="space-y-2 border-t border-[#E7E5E4] pt-4 text-xs font-mono text-[#1C1917]">
         <div><strong class="text-[#EA580C]">Peran:</strong> <span id="modal-roles">-</span></div>
@@ -898,16 +1062,16 @@ try {
       </div>
 
       <div class="flex justify-between pt-2">
-        <button id="prev-modal" class="text-sm font-mono text-[#78716C] hover:text-[#EA580C] transition-colors" aria-label="Sebelumnya">← Sebelumnya</button>
-        <button id="next-modal" class="text-sm font-mono text-[#78716C] hover:text-[#EA580C] transition-colors" aria-label="Berikutnya">Berikutnya →</button>
+        <button id="prev-modal" class="text-xs sm:text-sm font-mono text-[#78716C] hover:text-[#EA580C] transition-colors p-2" aria-label="Sebelumnya">← Sebelumnya</button>
+        <button id="next-modal" class="text-xs sm:text-sm font-mono text-[#78716C] hover:text-[#EA580C] transition-colors p-2" aria-label="Berikutnya">Berikutnya →</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL SIMULATOR SISE v2.4 -->
-  <div id="sise-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="sise-modal-title" aria-label="Simulator SISE v2.4">
-    <div class="bg-[#1C1917] text-[#FBFBF9] border border-gray-800 max-w-2xl w-full p-6 md:p-8 space-y-6 relative font-mono text-xs">
-      <button id="close-sise-modal" class="absolute top-4 right-4 text-xl font-bold text-white hover:text-[#EA580C]">✕</button>
+  <div id="sise-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="sise-modal-title" aria-label="Simulator SISE v2.4">
+    <div class="bg-[#1C1917] text-[#FBFBF9] border border-gray-800 max-w-2xl w-full p-5 sm:p-8 space-y-6 relative font-mono text-xs mx-auto">
+      <button id="close-sise-modal" class="absolute top-3 right-3 text-xl font-bold text-white hover:text-[#EA580C] w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors" aria-label="Tutup simulator">✕</button>
 
       <div class="space-y-1">
         <span class="text-[#EA580C] text-[10px] uppercase tracking-wider">ENTERPRISE SIMULATOR</span>

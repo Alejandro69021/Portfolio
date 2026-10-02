@@ -124,7 +124,7 @@ function initAttributeScrollReveal() {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.05, rootMargin: '0px 0px -30px 0px' }
     );
 
     observer.observe(container);
@@ -147,7 +147,7 @@ function initAttributeScrollReveal() {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.05, rootMargin: '0px 0px -30px 0px' }
     );
 
     observer.observe(el);
@@ -167,7 +167,7 @@ function initAttributeScrollReveal() {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.05, rootMargin: '0px 0px -30px 0px' }
     );
 
     observer.observe(bar);
@@ -194,7 +194,111 @@ function initScrollReveal() {
   els.forEach(el => observer.observe(el));
 }
 
-// ── M3: Hero split-text reveal ─────────────────────────────────────────────
+// ── M3: Hero 3-Column Split Face & Hover Interaction ────────────────────────
+function initHero() {
+  const heroSection = document.getElementById('hero');
+  if (!heroSection) return;
+
+  const colLeft       = heroSection.querySelector<HTMLElement>('.hero-col-left');
+  const colRight      = heroSection.querySelector<HTMLElement>('.hero-col-right');
+  const imgFace       = document.getElementById('hero-face');
+  const faceContainer = document.getElementById('hero-face-container');
+  const btnSains      = document.getElementById('hero-btn-sains');
+  const btnTekno      = document.getElementById('hero-btn-tekno');
+  const btnReset      = document.getElementById('hero-btn-reset');
+  const reduced       = prefersReduced();
+
+  // 1. Load animation: halves slide in from edges, then text columns fade up
+  if (reduced) {
+    heroSection.classList.add('hero-joined');
+  } else {
+    requestAnimationFrame(() => {
+      setTimeout(() => { heroSection.classList.add('hero-joined'); }, 60);
+    });
+  }
+
+  // 2. Hover/touch helpers — toggle class on #hero so CSS handles all visuals
+  let currentSide: 'left' | 'right' | null = null;
+  const setHover = (side: 'left' | 'right' | null) => {
+    currentSide = side;
+    heroSection.classList.remove('hero-hover-left', 'hero-hover-right');
+    if (side) heroSection.classList.add(`hero-hover-${side}`);
+  };
+
+  // Desktop: mouseenter / mouseleave on each text column
+  colLeft?.addEventListener('mouseenter',  () => setHover('left'));
+  colLeft?.addEventListener('mouseleave',  () => setHover(null));
+  colRight?.addEventListener('mouseenter', () => setHover('right'));
+  colRight?.addEventListener('mouseleave', () => setHover(null));
+
+  // Touch / Click toggle helper: toggles side or resets if already selected
+  const toggleSide = (side: 'left' | 'right') => {
+    if (currentSide === side) {
+      setHover(null);
+    } else {
+      setHover(side);
+    }
+  };
+
+  colLeft?.addEventListener('click',  () => toggleSide('left'));
+  colRight?.addEventListener('click', () => toggleSide('right'));
+
+  // Mobile Switcher Buttons (HP friendly)
+  btnSains?.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleSide('left');
+  });
+  btnTekno?.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleSide('right');
+  });
+  btnReset?.addEventListener('click', (e) => {
+    e.preventDefault();
+    setHover(null);
+  });
+
+  // Direct Tap / Click on Face Image (detect left half vs right half)
+  const handleFaceClick = (e: MouseEvent) => {
+    const target = faceContainer || imgFace;
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    const midX = rect.left + rect.width / 2;
+    if (e.clientX < midX) {
+      toggleSide('left');
+    } else {
+      toggleSide('right');
+    }
+  };
+
+  faceContainer?.addEventListener('click', handleFaceClick);
+
+  // 3. Light parallax on face image: max 0.12x, desktop-only, non-reduced
+  if (!imgFace || reduced) return;
+
+  let ticking = false;
+  const updateParallax = () => {
+    if (prefersReduced() || window.innerWidth < 768) {
+      imgFace.style.transform = 'none';
+      ticking = false;
+      return;
+    }
+    const scrollY = window.scrollY;
+    const heroHeight = heroSection.offsetHeight || 700;
+    if (scrollY <= heroHeight + 150) {
+      imgFace.style.transform = `translateY(${scrollY * 0.12}px)`;
+    }
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(updateParallax); }
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth < 768) imgFace.style.transform = 'none';
+  }, { passive: true });
+}
+
+// ── Legacy Hero split-text reveal fallback ─────────────────────────────────
 function initHeroSplit() {
   const h1 = document.querySelector<HTMLElement>('#hero-headline');
   if (!h1 || prefersReduced()) {
@@ -257,13 +361,14 @@ function initDragCarousel() {
     let userInteracting    = false;
     let resumeTimer: ReturnType<typeof setTimeout> | null = null;
 
-    // ── Auto-scroll (slow drift; stops at end, no hard jump) ────────────────
+    // ── Auto-scroll (slow drift on desktop; mobile uses native inertia touch) ──
+    const isTouch = () => window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
     const stopAuto = () => { cancelAnimationFrame(autoRaf); autoRaf = 0; };
     const startAuto = () => {
-      if (autoRaf || prefersReduced() || !isVisible || userInteracting) return;
+      if (isTouch() || autoRaf || prefersReduced() || !isVisible || userInteracting) return;
       const SPEED = 0.55; // px per frame
       const tick = () => {
-        if (!isVisible || userInteracting || prefersReduced()) { autoRaf = 0; return; }
+        if (!isVisible || userInteracting || prefersReduced() || isTouch()) { autoRaf = 0; return; }
         const maxScroll = el.scrollWidth - el.clientWidth;
         if (el.scrollLeft >= maxScroll - 1) { autoRaf = 0; return; } // stop at end, no jump
         el.scrollLeft += SPEED;
@@ -562,20 +667,37 @@ function initImageSkeleton() {
   });
 }
 
-// ── M4: Pie chart interaction (preserve existing logic) ────────────────────
+// ── M4: Pie chart interaction (with active state for mobile & desktop) ───────
 function initPieChart() {
   const sliceBtns = document.querySelectorAll<HTMLElement>('.slice-btn');
   const rolePanels = document.querySelectorAll<HTMLElement>('.role-panel');
   if (!sliceBtns.length) return;
 
+  const setActive = (targetId: string) => {
+    rolePanels.forEach(panel => {
+      panel.classList.toggle('hidden', panel.id !== targetId);
+    });
+    sliceBtns.forEach(btn => {
+      const isTarget = btn.getAttribute('data-target') === targetId;
+      if (btn.tagName === 'BUTTON') {
+        btn.classList.toggle('font-bold', isTarget);
+        btn.classList.toggle('underline', isTarget);
+      }
+      if (btn.tagName === 'path') {
+        (btn as SVGPathElement).style.opacity = isTarget ? '1' : '0.85';
+      }
+    });
+  };
+
   sliceBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetId = btn.getAttribute('data-target') ?? '';
-      rolePanels.forEach(panel => {
-        panel.classList.toggle('hidden', panel.id !== targetId);
-      });
+      setActive(targetId);
     });
   });
+
+  // Default active role
+  setActive('role-health');
 }
 
 // ── M4: SISE modal (preserve existing logic) ──────────────────────────────
@@ -617,6 +739,7 @@ function initHamburger() {
     btn.setAttribute('aria-label', open ? 'Tutup menu navigasi' : 'Buka menu navigasi');
     menu.setAttribute('aria-hidden', String(!open));
     menu.classList.toggle('is-open', open);
+    menu.classList.toggle('hidden', !open);
   };
 
   btn.addEventListener('click', () => toggle());
@@ -631,6 +754,14 @@ function initHamburger() {
     const header = document.getElementById('site-header');
     if (header && !header.contains(e.target as Node) && btn.getAttribute('aria-expanded') === 'true') {
       toggle(false);
+    }
+  });
+
+  // Close on Escape key (keyboard accessibility)
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+      toggle(false);
+      btn.focus();
     }
   });
 }
@@ -663,6 +794,7 @@ function boot() {
   initScrollspy();
   initAttributeScrollReveal();
   initScrollReveal();
+  initHero();
   initHeroSplit();
   initCountUp();
   initDragCarousel();
