@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -12,7 +13,7 @@ const {
 } = Astro.props;
 ---
 
-<!usr/bin/env html>
+<!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
@@ -38,8 +39,27 @@ const {
     <!-- Google Fonts Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- M1: Astro View Transitions -->
+    <ClientRouter />
   </head>
   <body class="bg-[#FBFBF9] text-[#1C1917] antialiased selection:bg-[#EA580C] selection:text-white">
+
+    <!-- M4: Scroll progress bar -->
+    <div id="scroll-progress" aria-hidden="true"></div>
+
+    <!-- M12: Page loader (first visit only) -->
+    <div id="page-loader" aria-hidden="true" aria-label="Memuat halaman">
+      <span class="loader-dot"></span>
+      <span class="loader-dot"></span>
+      <span class="loader-dot"></span>
+    </div>
+
     <slot />
+
+    <!-- Motion script -->
+    <script>
+      import '../scripts/motion.ts';
+    </script>
   </body>
 </html>

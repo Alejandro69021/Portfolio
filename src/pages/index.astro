@@ -193,23 +193,31 @@ const randomFacts = [
         Terbah, Pengasih, Kulon Progo, DIY
       </div>
 
+      <!-- Hero headline with split-text -->
       <div class="space-y-6 max-w-4xl">
-        <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-normal leading-[1.15] text-[#1C1917]">
-          Menerjemahkan Data &amp; Narasi Visual Menjadi <span class="italic text-[#EA580C]">Solusi Berdampak.</span>
+        <h1 id="hero-headline" class="font-serif text-4xl sm:text-6xl md:text-7xl font-normal leading-[1.15] text-[#1C1917]">
+          <span class="hero-word">Menerjemahkan</span>
+          <span class="hero-word">Data</span>
+          <span class="hero-word">&</span>
+          <span class="hero-word">Narasi</span>
+          <span class="hero-word">Visual</span>
+          <span class="hero-word">Menjadi</span>
+          <span class="hero-word italic text-[#EA580C]">Solusi</span>
+          <span class="hero-word italic text-[#EA580C]">Berdampak.</span>
         </h1>
         <p class="text-lg md:text-xl text-[#78716C] leading-relaxed max-w-2xl font-normal">
           Saya <strong class="text-[#1C1917] font-semibold">Muhammad Fadhil Al Wafie (Walex)</strong>. Mahasiswa Promosi Kesehatan UNY yang memadukan komunikasi edukasi kesehatan, dokumentasi sinematik, dan pengembangan teknologi surveilans.
         </p>
       </div>
 
-      <!-- Quick Metrics Strip -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-[#E7E5E4] text-left">
+      <!-- Quick Metrics Strip with count-up -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-[#E7E5E4] text-left reveal-stagger">
         <div>
-          <div class="font-serif text-3xl font-bold text-[#1C1917]">40%</div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="40%">40%</div>
           <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Promotor Kesehatan</div>
         </div>
         <div>
-          <div class="font-serif text-3xl font-bold text-[#1C1917]">20+</div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="20+">20+</div>
           <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Major Event Photographed</div>
         </div>
         <div>
@@ -217,22 +225,22 @@ const randomFacts = [
           <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">SISE Dinkes App</div>
         </div>
         <div>
-          <div class="font-serif text-3xl font-bold text-[#1C1917]">95%</div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]" data-countup="95%">95%</div>
           <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Health Advocacy Rating</div>
         </div>
       </div>
     </section>
 
-    <!-- HORIZONTAL PHOTO STRIP (Adham Dannaway Style) -->
-    <section class="border-y border-[#E7E5E4] py-8 bg-[#FBFBF9] overflow-hidden">
+    <!-- HORIZONTAL PHOTO STRIP with drag-carousel -->
+    <section class="border-y border-[#E7E5E4] py-8 bg-[#FBFBF9] overflow-hidden reveal">
       <div class="max-w-6xl mx-auto px-6 mb-4 flex justify-between items-center">
         <span class="text-xs font-mono text-[#78716C] uppercase tracking-widest">Dokumentasi Lapangan &amp; Event Sinematik</span>
         <span class="text-xs font-mono text-[#EA580C]">← Geser Horizontal →</span>
       </div>
       
-      <div class="flex space-x-6 overflow-x-auto px-6 pb-4 scrollbar-thin">
+      <div class="flex space-x-6 overflow-x-auto px-6 pb-4 scrollbar-thin drag-carousel">
         {photoStrip.map((photo, i) => (
-          <div class="flex-none w-72 sm:w-80 group relative bg-[#E7E5E4]/40 border border-[#E7E5E4] p-5 rounded-none transition-all hover:border-[#EA580C]">
+          <div class="flex-none w-72 sm:w-80 group relative bg-[#E7E5E4]/40 border border-[#E7E5E4] p-5 rounded-none transition-all hover:border-[#EA580C] card-hover">
             <div class="h-44 bg-[#1C1917]/5 flex flex-col justify-between p-4 border border-[#E7E5E4] relative overflow-hidden">
               <span class="text-4xl font-serif font-bold text-[#1C1917]/10 group-hover:text-[#EA580C]/20 transition-colors">0{i+1}</span>
               <div class="text-xs font-mono text-[#78716C]">{photo.gear}</div>
@@ -246,8 +254,8 @@ const randomFacts = [
       </div>
     </section>
 
-    <!-- PIE CHART IDENTITY SECTION (Adham Dannaway Hybrid Lens) -->
-    <section id="peran" class="max-w-6xl mx-auto px-6">
+    <!-- PIE CHART IDENTITY SECTION -->
+    <section id="peran" class="max-w-6xl mx-auto px-6 reveal">
       <div class="space-y-4 mb-12">
         <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Identitas Tiga Lensa</span>
         <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Konsep Hibrida Tiga Lensa Kebahlian</h2>
@@ -346,13 +354,13 @@ const randomFacts = [
     </section>
 
     <!-- INTERACTIVE SKILL BAR CHART -->
-    <section class="max-w-6xl mx-auto px-6 space-y-12">
+    <section class="max-w-6xl mx-auto px-6 space-y-12 reveal">
       <div class="space-y-4">
         <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Tingkat Kompetensi</span>
         <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Matriks Keahlian Lintas Disiplin</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 reveal-stagger">
         {skillChart.map((skill) => (
           <div class="space-y-2 border-b border-[#E7E5E4] pb-4">
             <div class="flex justify-between items-center text-sm">
@@ -371,15 +379,15 @@ const randomFacts = [
     </section>
 
     <!-- FEATURED PROJECTS (Editorial Case Studies) -->
-    <section id="karya" class="max-w-6xl mx-auto px-6 space-y-12">
+    <section id="karya" class="max-w-6xl mx-auto px-6 space-y-12 reveal">
       <div class="space-y-4">
         <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Studi Kasus Unggulan</span>
         <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Karya Health-Tech &amp; Inisiatif</h2>
       </div>
 
-      <div class="space-y-16">
+      <div class="space-y-16 reveal-stagger">
         {featuredProjects.map((proj) => (
-          <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border border-[#E7E5E4] p-8 md:p-10 bg-[#FBFBF9] hover:border-[#EA580C] transition-all">
+          <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border border-[#E7E5E4] p-8 md:p-10 bg-[#FBFBF9] hover:border-[#EA580C] transition-all card-hover">
             
             <div class="lg:col-span-7 space-y-6">
               <div class="space-y-2">
@@ -420,7 +428,7 @@ const randomFacts = [
                     href={proj.url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EA580C] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#1C1917] transition-all"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EA580C] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#1C1917] transition-all btn-micro"
                   >
                     Buka App Live ↗
                   </a>
@@ -429,7 +437,7 @@ const randomFacts = [
                 {proj.interactiveSimulator && (
                   <button 
                     id="open-sise-modal"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1C1917] text-[#FBFBF9] text-xs font-mono uppercase tracking-wider hover:bg-[#EA580C] transition-all"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1C1917] text-[#FBFBF9] text-xs font-mono uppercase tracking-wider hover:bg-[#EA580C] transition-all btn-micro"
                   >
                     ⚡ Uji Simulator SISE v2.4
                   </button>
@@ -489,7 +497,7 @@ const randomFacts = [
     </section>
 
     <!-- RANDOM FACTS & GEAR GRID -->
-    <section id="tentang" class="max-w-6xl mx-auto px-6 space-y-12">
+    <section id="tentang" class="max-w-6xl mx-auto px-6 space-y-12 reveal">
       <div class="space-y-4">
         <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Fakta Ringkas &amp; Perangkat</span>
         <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Di Luar Kode &amp; Lensa</h2>
@@ -551,7 +559,7 @@ const randomFacts = [
     </section>
 
     <!-- HALL OF RECORD (Filterable Gallery) -->
-    <section id="rekam-jejak" class="max-w-6xl mx-auto px-6 space-y-8">
+    <section id="rekam-jejak" class="max-w-6xl mx-auto px-6 space-y-8 reveal">
       <div class="space-y-4">
         <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Rekam Jejak Event</span>
         <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Galeri Liputan &amp; Dokumentasi</h2>
@@ -574,15 +582,18 @@ const randomFacts = [
       </div>
 
       <!-- Gallery Grid -->
-      <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative">
         {galleryEvents.map((ev) => (
           <div 
-            class="gallery-item group bg-[#E7E5E4]/20 border border-[#E7E5E4] p-6 space-y-4 cursor-pointer hover:border-[#EA580C] transition-all"
+            class="gallery-item group bg-[#E7E5E4]/20 border border-[#E7E5E4] p-6 space-y-4 cursor-pointer hover:border-[#EA580C] transition-all card-hover"
             data-category={ev.cat}
             data-title={ev.title}
-            data-[#roles]={ev.roles}
+            data-roles={ev.roles}
             data-gear={ev.gear}
             data-desc={ev.desc}
+            tabindex="0"
+            role="button"
+            aria-label={`Buka detail ${ev.title}`}
           >
             <div class="flex justify-between items-start">
               <span class="text-[10px] font-mono uppercase bg-[#EA580C]/10 text-[#EA580C] px-2 py-0.5">{ev.cat}</span>
@@ -604,7 +615,7 @@ const randomFacts = [
     </section>
 
     <!-- CONTACT SECTION (Netlify Form Ready) -->
-    <section id="kontak" class="max-w-6xl mx-auto px-6">
+    <section id="kontak" class="max-w-6xl mx-auto px-6 reveal">
       <div class="bg-[#1C1917] text-[#FBFBF9] p-8 md:p-16 border border-[#1C1917] grid grid-cols-1 lg:grid-cols-12 gap-12">
         
         <div class="lg:col-span-5 space-y-6">
@@ -631,28 +642,28 @@ const randomFacts = [
           >
             <input type="hidden" name="form-name" value="contact" />
 
-            <div class="space-y-2">
-              <label for="name" class="block uppercase tracking-wider text-gray-300">Nama Lengkap *</label>
+            <div class="form-field">
               <input 
                 type="text" 
                 id="name" 
                 name="name" 
                 required 
-                placeholder="Masukkan nama Anda..."
+                placeholder=" "
                 class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
               />
+              <label for="name">Nama Lengkap *</label>
             </div>
 
-            <div class="space-y-2">
-              <label for="email" class="block uppercase tracking-wider text-gray-300">Alamat Email *</label>
+            <div class="form-field">
               <input 
                 type="email" 
                 id="email" 
                 name="email" 
                 required 
-                placeholder="nama@domain.com"
+                placeholder=" "
                 class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
               />
+              <label for="email">Alamat Email *</label>
             </div>
 
             <div class="space-y-2">
@@ -669,23 +680,23 @@ const randomFacts = [
               </select>
             </div>
 
-            <div class="space-y-2">
-              <label for="message" class="block uppercase tracking-wider text-gray-300">Pesan *</label>
+            <div class="form-field">
               <textarea 
                 id="message" 
                 name="message" 
                 rows="4" 
                 required 
-                placeholder="Tuliskan detail kolaborasi atau pertanyaan..."
+                placeholder=" "
                 class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
               ></textarea>
+              <label for="message">Pesan *</label>
             </div>
 
             <button 
               type="submit" 
-              class="w-full py-4 bg-[#EA580C] text-white uppercase tracking-widest font-bold hover:bg-white hover:text-[#1C1917] transition-all"
+              class="w-full py-4 bg-[#EA580C] text-white uppercase tracking-widest font-bold hover:bg-white hover:text-[#1C1917] transition-all btn-submit btn-micro"
             >
-              Kirim Pesan (Netlify Form Ready)
+              Kirim Pesan
             </button>
           </form>
         </div>
@@ -712,10 +723,14 @@ const randomFacts = [
   </footer>
 
   <!-- MODAL LIGHTBOX GALLERIES -->
-  <div id="gallery-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-[#FBFBF9] border border-[#E7E5E4] max-w-xl w-full p-6 md:p-8 space-y-6 relative">
-      <button id="close-modal" class="absolute top-4 right-4 text-xl font-mono font-bold text-[#1C1917] hover:text-[#EA580C]">✕</button>
+  <div id="gallery-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4" aria-modal="true" role="dialog" aria-label="Detail Event">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" aria-hidden="true"></div>
+    <!-- Content -->
+    <div class="lightbox-inner bg-[#FBFBF9] border border-[#E7E5E4] max-w-xl w-full p-8 space-y-6 relative z-10 mx-12">
+      <button id="close-modal" class="absolute top-4 right-4 text-xl font-mono font-bold text-[#1C1917] hover:text-[#EA580C]" aria-label="Tutup">✕</button>
       
+      <!-- Keyboard nav arrows (outside the inner box) -->
       <div class="space-y-2">
         <span id="modal-cat" class="text-xs font-mono uppercase bg-[#EA580C]/10 text-[#EA580C] px-2.5 py-1 inline-block">CATEGORY</span>
         <h3 id="modal-title" class="font-serif text-2xl font-bold text-[#1C1917]">Event Title</h3>
@@ -726,6 +741,11 @@ const randomFacts = [
       <div class="space-y-2 border-t border-[#E7E5E4] pt-4 text-xs font-mono text-[#1C1917]">
         <div><strong class="text-[#EA580C]">Peran:</strong> <span id="modal-roles">-</span></div>
         <div><strong class="text-[#EA580C]">Gear Diterapkan:</strong> <span id="modal-gear">-</span></div>
+      </div>
+
+      <div class="flex justify-between pt-2">
+        <button id="prev-modal" class="text-sm font-mono text-[#78716C] hover:text-[#EA580C] transition-colors" aria-label="Sebelumnya">← Sebelumnya</button>
+        <button id="next-modal" class="text-sm font-mono text-[#78716C] hover:text-[#EA580C] transition-colors" aria-label="Berikutnya">Berikutnya →</button>
       </div>
     </div>
   </div>
@@ -763,115 +783,5 @@ const randomFacts = [
     </div>
   </div>
 
-  <!-- VANILLA JAVASCRIPT LOGIC -->
-  <script is:inline>
-    document.addEventListener('DOMContentLoaded', () => {
-      
-      // 1. PIE CHART INTERACTION
-      const sliceBtns = document.querySelectorAll('.slice-btn');
-      const rolePanels = document.querySelectorAll('.role-panel');
-
-      sliceBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const targetId = btn.getAttribute('data-target');
-          
-          rolePanels.forEach(panel => {
-            if (panel.id === targetId) {
-              panel.classList.remove('hidden');
-            } else {
-              panel.classList.add('hidden');
-            }
-          });
-        });
-      });
-
-      // 2. GALLERY FILTERING
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      const galleryItems = document.querySelectorAll('.gallery-item');
-
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach(b => {
-            b.classList.remove('bg-[#1C1917]', 'text-white');
-            b.classList.add('bg-[#FBFBF9]', 'text-[#1C1917]');
-          });
-
-          btn.classList.remove('bg-[#FBFBF9]', 'text-[#1C1917]');
-          btn.classList.add('bg-[#1C1917]', 'text-white');
-
-          const filter = btn.getAttribute('data-filter');
-
-          galleryItems.forEach(item => {
-            const cat = item.getAttribute('data-category');
-            if (filter === 'all' || cat === filter) {
-              item.style.display = 'block';
-            } else {
-              item.style.display = 'none';
-            }
-          });
-        });
-      });
-
-      // 3. LIGHTBOX MODAL FOR GALLERY
-      const modal = document.getElementById('gallery-modal');
-      const closeModal = document.getElementById('close-modal');
-      const modalCat = document.getElementById('modal-cat');
-      const modalTitle = document.getElementById('modal-title');
-      const modalDesc = document.getElementById('modal-desc');
-      const modalRoles = document.getElementById('modal-roles');
-      const modalGear = document.getElementById('modal-gear');
-
-      galleryItems.forEach(item => {
-        item.addEventListener('click', () => {
-          modalCat.textContent = item.getAttribute('data-category') || '';
-          modalTitle.textContent = item.getAttribute('data-title') || '';
-          modalDesc.textContent = item.getAttribute('data-desc') || '';
-          modalRoles.textContent = item.getAttribute('data-roles') || '-';
-          modalGear.textContent = item.getAttribute('data-gear') || '-';
-
-          modal.classList.remove('hidden');
-          modal.classList.add('flex');
-        });
-      });
-
-      if (closeModal) {
-        closeModal.addEventListener('click', () => {
-          modal.classList.add('hidden');
-          modal.classList.remove('flex');
-        });
-      }
-
-      // 4. SISE v2.4 SIMULATOR MODAL
-      const siseModal = document.getElementById('sise-modal');
-      const openSiseBtn = document.getElementById('open-sise-modal');
-      const closeSiseBtn = document.getElementById('close-sise-modal');
-      const simRunBtn = document.getElementById('sim-run-btn');
-      const simOutput = document.getElementById('sim-output');
-      const simTextOutput = document.getElementById('sim-text-output');
-      const simPuskesmas = document.getElementById('sim-puskesmas');
-
-      if (openSiseBtn) {
-        openSiseBtn.addEventListener('click', () => {
-          siseModal.classList.remove('hidden');
-          siseModal.classList.add('flex');
-        });
-      }
-
-      if (closeSiseBtn) {
-        closeSiseBtn.addEventListener('click', () => {
-          siseModal.classList.add('hidden');
-          siseModal.classList.remove('flex');
-        });
-      }
-
-      if (simRunBtn) {
-        simRunBtn.addEventListener('click', () => {
-          const pusk = simPuskesmas.value;
-          simOutput.classList.remove('hidden');
-          simTextOutput.textContent = `BAB I PENDAHULUAN: Berdasarkan data laporan surveilans epidemiologi P2P ${pusk} bulan Agustus 2026, tercatat penurunan tren tren penyakit menular sebesar 12.4%. Rekomendasi tindakan intervensi promosi kesehatan primer disiapkan untuk bidang P2P Dinas Kesehatan Kabupaten Kulon Progo.`;
-        });
-      }
-    });
-  </script>
-
+  <!-- Lightbox backdrop close (background overlay handled by motion.ts) -->
 </Layout>
