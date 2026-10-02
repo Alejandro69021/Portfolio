@@ -1,8 +1,17 @@
 ---
-import Layout from '../layouts/Layout.astro';
+export const prerender = false;
 
-// Master Data Profile
-const profile = {
+import Layout from '../layouts/Layout.astro';
+import { getPublicSupabase } from '../lib/supabase/server';
+
+// Set public caching headers as specified in PRD section 8
+Astro.response.headers.set(
+  'Cache-Control',
+  'public, s-maxage=60, stale-while-revalidate=300'
+);
+
+// ── Default Fallback Data (Preserves exact previous UI if DB offline or empty) ─
+const defaultProfile = {
   fullName: "Muhammad Fadhil Al Wafie",
   nickname: "Walex",
   tagline: "D4 Promosi Kesehatan UNY • Visual Storyteller • Health-Tech Builder",
@@ -18,12 +27,12 @@ const profile = {
   }
 };
 
-const roles = [
+const defaultRoles = [
   {
     id: 'health',
     percentage: 40,
     title: 'Health Promoter & Educator',
-    color: '#EA580C', // Terracotta
+    color: '#EA580C',
     bgColor: 'bg-[#EA580C]',
     textColor: 'text-[#EA580C]',
     borderColor: 'border-[#EA580C]',
@@ -39,7 +48,7 @@ const roles = [
     id: 'storyteller',
     percentage: 35,
     title: 'Visual Storyteller',
-    color: '#1C1917', // Ink / Charcoal
+    color: '#1C1917',
     bgColor: 'bg-[#1C1917]',
     textColor: 'text-[#1C1917]',
     borderColor: 'border-[#1C1917]',
@@ -55,7 +64,7 @@ const roles = [
     id: 'builder',
     percentage: 25,
     title: 'Health-Tech Builder',
-    color: '#78716C', // Slate
+    color: '#78716C',
     bgColor: 'bg-[#78716C]',
     textColor: 'text-[#78716C]',
     borderColor: 'border-[#78716C]',
@@ -68,7 +77,7 @@ const roles = [
   }
 ];
 
-const skillChart = [
+const defaultSkillChart = [
   { name: 'Health Advocacy & Public Speaking', level: 95, category: 'Health' },
   { name: 'Peer Counseling & Empathetic Support', level: 92, category: 'Counseling' },
   { name: 'Video Editing & Motion (Premiere / CapCut)', level: 90, category: 'Visual' },
@@ -77,7 +86,7 @@ const skillChart = [
   { name: 'Epidemiological Data Analysis (SPSS/Excel)', level: 82, category: 'Tech' }
 ];
 
-const featuredProjects = [
+const defaultFeaturedProjects = [
   {
     id: 'sise',
     name: 'SISE v2.4 (Enterprise Edition)',
@@ -125,7 +134,7 @@ const featuredProjects = [
   }
 ];
 
-const photoStrip = [
+const defaultPhotoStrip = [
   { title: "Dieng Caldera Race 2024", cat: "Sport / Trail Run", gear: "Sony A6400 / Fujifilm XA-3" },
   { title: "Vertical Telomoyo 2023", cat: "Sport / Trail Run", gear: "Sony A6400" },
   { title: "Fun Run UNY 2025", cat: "Sport / Campus", gear: "Sony A6400" },
@@ -134,7 +143,7 @@ const photoStrip = [
   { title: "Pasar Wates Health Advocacy", cat: "Public Health", gear: "Mobile / Camera" }
 ];
 
-const galleryEvents = [
+const defaultGalleryEvents = [
   { title: "Dieng Caldera Race Trail Run 2024", roles: "Assistant Videographer & Photographer", cat: "Olahraga / Race", gear: "Fujifilm XA-3, Sony A6400", desc: "Dokumentasi pelari trail run medan ekstrem di dataran tinggi Dieng." },
   { title: "Vertical Telomoyo Trail Run 2023", roles: "Main Videographer, Photographer & Editor", cat: "Olahraga / Race", gear: "Sony A6400", desc: "Liputan sinematik ajang lari gunung berkecepatan tinggi di Telomoyo." },
   { title: "Fun Run UNY 2025", roles: "Videographer, Photographer & Editor", cat: "Olahraga / Race", gear: "Sony A6400", desc: "Dokumentasi lari gembira perayaan civitas akademika UNY." },
@@ -146,19 +155,96 @@ const galleryEvents = [
   { title: "Grintii Apparel Hub 2023-2024", roles: "Photographer", cat: "Semua Event", gear: "Sony A6400", desc: "Sesi foto komersial katalog pakaian dan merchandise." }
 ];
 
-const gearList = {
+const defaultGearList = {
   cameras: ["Sony A6400", "Fujifilm XA-3"],
   lenses: ["Aspherical Super EBC Lens 55-200mm"],
   accessories: ["Tripod Zomei"],
   mobile: ["Oppo Reno 8", "Xiaomi Redmi Note 13 Pro", "Xiaomi Redmi 7"]
 };
 
-const randomFacts = [
+const defaultRandomFacts = [
   { label: "Lokasi Basisfungsi", val: "Terbah, Pengasih, Kulon Progo, DI Yogyakarta" },
   { label: "Hobi & Passion", val: "Enthusiast Trail Run Race (Dieng Caldera, Telomoyo)" },
   { label: "Konseling Peer", val: "Konselor Sebaya Kesehatan Mental Aktif di UNY" },
   { label: "Pendidikan", val: "D4 Promosi Kesehatan - Universitas Negeri Yogyakarta (2023-Sekarang)" }
 ];
+
+// ── Fetch from Supabase (Only published status, with seamless fallback) ───────
+let profile = defaultProfile;
+let roles = defaultRoles;
+let skillChart = defaultSkillChart;
+let featuredProjects = defaultFeaturedProjects;
+let photoStrip = defaultPhotoStrip;
+let galleryEvents = defaultGalleryEvents;
+let gearList = defaultGearList;
+let randomFacts = defaultRandomFacts;
+let eventCategories: string[] = ['Olahraga / Race', 'Kampus UNY', 'Medis'];
+
+try {
+  const supabase = getPublicSupabase();
+
+  const [settingsRes, projectsRes, eventsRes, categoriesRes] = await Promise.all([
+    supabase.from('site_settings').select('data').eq('id', 1).maybeSingle(),
+    supabase.from('projects').select('*').eq('status', 'published').order('sort_order', { ascending: true }),
+    supabase.from('events').select('*, event_categories(name)').eq('status', 'published').order('sort_order', { ascending: true }),
+    supabase.from('event_categories').select('name').order('sort_order', { ascending: true })
+  ]);
+
+  // Site Settings
+  if (settingsRes?.data?.data) {
+    const d = settingsRes.data.data;
+    if (d.profile) profile = d.profile;
+    if (d.roles) roles = d.roles;
+    if (d.skillChart) skillChart = d.skillChart;
+    if (d.gearList) gearList = d.gearList;
+    if (d.randomFacts) randomFacts = d.randomFacts;
+    if (d.photoStrip) photoStrip = d.photoStrip;
+  }
+
+  // Projects (Karya)
+  if (projectsRes?.data && projectsRes.data.length > 0) {
+    featuredProjects = projectsRes.data.map(p => {
+      const isSim = Boolean(p.links?.interactiveSimulator || p.slug === 'sise-v2-4');
+      const isHyprevent = p.slug.includes('hyprevent');
+      const isCeritaku = p.slug.includes('ceritaku');
+      const id = isSim ? 'sise' : (isHyprevent ? 'hyprevent' : (isCeritaku ? 'ceritaku' : p.slug));
+
+      return {
+        id,
+        name: p.title,
+        title: p.subtitle || '',
+        client: p.links?.client || '',
+        tags: p.stack || [],
+        badge: p.links?.badge || p.category || 'Project',
+        description: p.description || '',
+        features: p.features || [],
+        url: p.links?.url,
+        interactiveSimulator: isSim
+      };
+    });
+  }
+
+  // Events (Galeri)
+  if (eventsRes?.data && eventsRes.data.length > 0) {
+    galleryEvents = eventsRes.data.map(e => ({
+      title: e.title,
+      roles: e.role || '',
+      cat: (e.event_categories as any)?.name || 'Semua Event',
+      gear: e.camera || '',
+      desc: e.description || ''
+    }));
+  }
+
+  // Event Categories
+  if (categoriesRes?.data && categoriesRes.data.length > 0) {
+    eventCategories = categoriesRes.data
+      .map(c => c.name)
+      .filter((name: string) => name && name !== 'Semua Event');
+  }
+} catch (err) {
+  // If Supabase is unreachable, fallback values will be used cleanly.
+  console.warn('Supabase fetch failed or not configured, using fallback data:', err);
+}
 ---
 
 <Layout title="Muhammad Fadhil Al Wafie (Walex) — Portfolio Editorial">
@@ -570,15 +656,11 @@ const randomFacts = [
         <button class="filter-btn active px-4 py-2 border border-[#1C1917] bg-[#1C1917] text-white text-xs font-mono uppercase transition-all" data-filter="all">
           Semua Event
         </button>
-        <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter="Olahraga / Race">
-          Olahraga / Race
-        </button>
-        <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter="Kampus UNY">
-          Kampus UNY
-        </button>
-        <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter="Medis">
-          Medis
-        </button>
+        {eventCategories.map((cat) => (
+          <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter={cat}>
+            {cat}
+          </button>
+        ))}
       </div>
 
       <!-- Gallery Grid -->

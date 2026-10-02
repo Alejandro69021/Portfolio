@@ -9,12 +9,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "seed": "node --env-file=.env scripts/seed.ts"
   },
   "dependencies": {
+    "@astrojs/netlify": "^8.2.6",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.5",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.6.5"
   },
   "allowScripts": {
     "esbuild": true

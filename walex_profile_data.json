@@ -1,0 +1,97 @@
+{
+  "profile": {
+    "fullName": "Muhammad Fadhil Al Wafie",
+    "nickname": "Walex",
+    "tagline": "D4 Promosi Kesehatan UNY • Visual Storyteller • Health-Tech Builder",
+    "headline": "Promotor Kesehatan • Videografer • Editor • Fotografer • Health-Tech Builder",
+    "location": "Terbah, Pengasih, Kulon Progo, DIY",
+    "contacts": {
+      "phone": "+6285717225399",
+      "emails": [
+        "fadhilalwafie@gmail.com",
+        "alexwafiefotografi@gmail.com"
+      ],
+      "instagramPersonal": "https://instagram.com/wafiens_",
+      "instagramPortfolio": "https://instagram.com/le_fotoke",
+      "lynkId": "https://lynk.id/lefotoke.",
+      "canva": "https://www.canva.com/design/DAGRAICVpY/XRf9A9s9JuDUQsNsjguNcA/edit"
+    }
+  },
+  "roles": [
+    {
+      "id": "health",
+      "percentage": 40,
+      "title": "Health Promoter & Educator",
+      "color": "#EA580C",
+      "bgColor": "bg-[#EA580C]",
+      "textColor": "text-[#EA580C]",
+      "borderColor": "border-[#EA580C]",
+      "description": "Promotor Kesehatan & Edukator Publik dengan pengalaman strategis di kedinasan, industri K3, dan lingkungan akademis.",
+      "highlights": [
+        "Internship Promotor K3 & AI Trainer - Dinkes Kulon Progo (Bidang P2P)",
+        "Internship Marketing & Promotor K3 - PT Merbabu Safety Indonesia",
+        "Konselor Sebaya Kesehatan Mental - Fakultas Vokasi UNY",
+        "Advokator Kesehatan Pedagang - Pasar Wates Kulon Progo"
+      ]
+    },
+    {
+      "id": "storyteller",
+      "percentage": 35,
+      "title": "Visual Storyteller",
+      "color": "#1C1917",
+      "bgColor": "bg-[#1C1917]",
+      "textColor": "text-[#1C1917]",
+      "borderColor": "border-[#1C1917]",
+      "description": "Videografer & Fotografer dokumentasi sinematik untuk 20+ event skala nasional, olahraga, medis, dan kampus.",
+      "highlights": [
+        "Dieng Caldera Race Trail Run 2024 & Vertical Telomoyo 2023",
+        "Fun Run UNY 2025 & Timbulharjo Fun Run 2024",
+        "UGM Nursing Student @ RS Sardjito Hospital 2024",
+        "Founder CeritaKu Kulon Progo (Inisiatif Wellness Tourism)"
+      ]
+    },
+    {
+      "id": "builder",
+      "percentage": 25,
+      "title": "Health-Tech Builder",
+      "color": "#78716C",
+      "bgColor": "bg-[#78716C]",
+      "textColor": "text-[#78716C]",
+      "borderColor": "border-[#78716C]",
+      "description": "Pengembang solusi digital interaktif dan otomatisasi workflow surveilans kesehatan masyarakat.",
+      "highlights": [
+        "SISE v2.4 (Enterprise Edition) - Surveillance Report Generator Dinkes",
+        "HyPrevent Platform - Interactive Hypertension Risk Assessment",
+        "Pemanfaatan AI Prompt Engineering & Web Tech (Astro, Tailwind, JS)"
+      ]
+    }
+  ],
+  "skillChart": [
+    { "name": "Health Advocacy & Public Speaking", "level": 95, "category": "Health" },
+    { "name": "Peer Counseling & Empathetic Support", "level": 92, "category": "Counseling" },
+    { "name": "Video Editing & Motion (Premiere / CapCut)", "level": 90, "category": "Visual" },
+    { "name": "Photography & Color Grading (Lightroom)", "level": 88, "category": "Visual" },
+    { "name": "Web Dev & AI Prompt Engineering (Astro/JS)", "level": 85, "category": "Tech" },
+    { "name": "Epidemiological Data Analysis (SPSS/Excel)", "level": 82, "category": "Tech" }
+  ],
+  "gearList": {
+    "cameras": ["Sony A6400", "Fujifilm XA-3"],
+    "lenses": ["Aspherical Super EBC Lens 55-200mm"],
+    "accessories": ["Tripod Zomei"],
+    "mobile": ["Oppo Reno 8", "Xiaomi Redmi Note 13 Pro", "Xiaomi Redmi 7"]
+  },
+  "randomFacts": [
+    { "label": "Lokasi Basisfungsi", "val": "Terbah, Pengasih, Kulon Progo, DI Yogyakarta" },
+    { "label": "Hobi & Passion", "val": "Enthusiast Trail Run Race (Dieng Caldera, Telomoyo)" },
+    { "label": "Konseling Peer", "val": "Konselor Sebaya Kesehatan Mental Aktif di UNY" },
+    { "label": "Pendidikan", "val": "D4 Promosi Kesehatan - Universitas Negeri Yogyakarta (2023-Sekarang)" }
+  ],
+  "photoStrip": [
+    { "title": "Dieng Caldera Race 2024", "cat": "Sport / Trail Run", "gear": "Sony A6400 / Fujifilm XA-3" },
+    { "title": "Vertical Telomoyo 2023", "cat": "Sport / Trail Run", "gear": "Sony A6400" },
+    { "title": "Fun Run UNY 2025", "cat": "Sport / Campus", "gear": "Sony A6400" },
+    { "title": "UGM Nursing @ RS Sardjito", "cat": "Medical Documentation", "gear": "Sony A6400" },
+    { "title": "PKKMB UNY 2024", "cat": "Campus Event", "gear": "Fujifilm XA-3" },
+    { "title": "Pasar Wates Health Advocacy", "cat": "Public Health", "gear": "Mobile / Camera" }
+  ]
+}
