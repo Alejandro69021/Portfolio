@@ -332,15 +332,16 @@ try {
 
         <!-- Hamburger (mobile) -->
         <button
+          type="button"
           id="nav-hamburger"
-          class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 focus:outline-none"
+          class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 focus:outline-none cursor-pointer select-none"
           aria-label="Buka menu navigasi"
           aria-expanded="false"
           aria-controls="mobile-menu"
         >
-          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300 origin-center"></span>
-          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300"></span>
-          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300 origin-center"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300 origin-center pointer-events-none"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300 pointer-events-none"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300 origin-center pointer-events-none"></span>
         </button>
       </div>
     </div>

@@ -734,19 +734,32 @@ function initHamburger() {
   if (!btn || !menu) return;
 
   const toggle = (force?: boolean) => {
-    const open = force ?? btn.getAttribute('aria-expanded') !== 'true';
+    const isCurrentlyOpen = btn.getAttribute('aria-expanded') === 'true';
+    const open = force !== undefined ? force : !isCurrentlyOpen;
+
     btn.setAttribute('aria-expanded', String(open));
     btn.setAttribute('aria-label', open ? 'Tutup menu navigasi' : 'Buka menu navigasi');
     menu.setAttribute('aria-hidden', String(!open));
-    menu.classList.toggle('is-open', open);
-    menu.classList.toggle('hidden', !open);
+
+    if (open) {
+      menu.classList.remove('hidden');
+      menu.classList.add('is-open');
+    } else {
+      menu.classList.remove('is-open');
+      menu.classList.add('hidden');
+    }
   };
 
-  btn.addEventListener('click', () => toggle());
+  // Use .onclick to guarantee no duplicate listener stacking
+  btn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle();
+  };
 
   // Close on mobile nav link click
   menu.querySelectorAll<HTMLAnchorElement>('a.mobile-nav-link').forEach(a => {
-    a.addEventListener('click', () => toggle(false));
+    a.onclick = () => toggle(false);
   });
 
   // Close on outside click
@@ -808,6 +821,15 @@ function boot() {
   initSmoothScroll();
 }
 
-// Run on initial load AND after every Astro View Transition
-document.addEventListener('DOMContentLoaded', boot);
+// In Astro with ClientRouter, 'astro:page-load' fires on first page load AND after every transition.
 document.addEventListener('astro:page-load', boot);
+
+// Fallback for non-transition pages only
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    // If ClientRouter is not present on page, run boot
+    if (!document.querySelector('[data-astro-transition-scope]')) {
+      boot();
+    }
+  }, { once: true });
+}
