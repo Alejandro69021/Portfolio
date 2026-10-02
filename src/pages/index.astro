@@ -21,7 +21,7 @@ const defaultProfile = {
     phone: "+6285717225399",
     emails: ["fadhilalwafie@gmail.com", "alexwafiefotografi@gmail.com"],
     instagramPersonal: "https://www.instagram.com/wafiens_",
-    instagramPortfolio: "https://instagram.com/le_fotoke",
+    instagramPortfolio: "https://www.instagram.com/wafiens_",
     lynkId: "https://lynk.id/lefotoke.",
     canva: "https://www.canva.com/design/DAGRAICVpY/XRf9A9s9JuDUQsNsjguNcA/edit"
   }
@@ -591,7 +591,7 @@ try {
                     id="open-sise-modal"
                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1C1917] text-[#FBFBF9] text-xs font-mono uppercase tracking-wider hover:bg-[#EA580C] transition-all btn-micro"
                   >
-                    ⚡ Uji Simulator SISE v2.4
+                    Uji Simulator SISE v2.4 →
                   </button>
                 )}
               </div>
@@ -687,22 +687,22 @@ try {
             <div>
               <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Kamera Utama:</span>
               <ul class="mt-1 space-y-1 text-gray-300">
-                {gearList.cameras.map(c => <li>📷 {c}</li>)}
+                {gearList.cameras.map(c => <li><span class="text-[#EA580C]">—</span> {c}</li>)}
               </ul>
             </div>
 
             <div>
               <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Lensa &amp; Aksesori:</span>
               <ul class="mt-1 space-y-1 text-gray-300">
-                {gearList.lenses.map(l => <li>🔍 {l}</li>)}
-                {gearList.accessories.map(a => <li>🔭 {a}</li>)}
+                {gearList.lenses.map(l => <li><span class="text-[#EA580C]">—</span> {l}</li>)}
+                {gearList.accessories.map(a => <li><span class="text-[#EA580C]">—</span> {a}</li>)}
               </ul>
             </div>
 
             <div>
               <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Mobile &amp; Field Device:</span>
               <ul class="mt-1 space-y-1 text-gray-300">
-                {gearList.mobile.map(m => <li>📱 {m}</li>)}
+                {gearList.mobile.map(m => <li><span class="text-[#EA580C]">—</span> {m}</li>)}
               </ul>
             </div>
           </div>
@@ -780,10 +780,10 @@ try {
           </p>
 
           <div class="space-y-3 pt-4 text-xs font-mono text-gray-300">
-            <div>📍 Terbah, Pengasih, Kulon Progo, DIY</div>
-            <div>📱 WhatsApp: <a href="https://wa.me/6285717225399" class="text-[#EA580C] hover:underline">+62 857-1722-5399</a></div>
-            <div>✉️ Email: fadhilalwafie@gmail.com</div>
-            <div>📷 IG Portfolio: <a href="https://instagram.com/le_fotoke" target="_blank" class="text-[#EA580C] hover:underline">@le_fotoke</a></div>
+            <div><span class="text-[#EA580C]">↳</span> Terbah, Pengasih, Kulon Progo, DIY</div>
+            <div><span class="text-[#EA580C]">→</span> WA: <a href="https://wa.me/6285717225399" class="text-[#EA580C] hover:underline">+62 857-1722-5399</a></div>
+            <div><span class="text-[#EA580C]">→</span> Email: fadhilalwafie@gmail.com</div>
+            <div><span class="text-[#EA580C]">→</span> IG: <a href="https://www.instagram.com/wafiens_" target="_blank" class="text-[#EA580C] hover:underline">@wafiens_</a></div>
           </div>
         </div>
 
