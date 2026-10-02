@@ -1,0 +1,877 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Master Data Profile
+const profile = {
+  fullName: "Muhammad Fadhil Al Wafie",
+  nickname: "Walex",
+  tagline: "D4 Promosi Kesehatan UNY • Visual Storyteller • Health-Tech Builder",
+  headline: "Promotor Kesehatan • Videografer • Editor • Fotografer • Health-Tech Builder",
+  location: "Terbah, Pengasih, Kulon Progo, DIY",
+  contacts: {
+    phone: "+6285717225399",
+    emails: ["fadhilalwafie@gmail.com", "alexwafiefotografi@gmail.com"],
+    instagramPersonal: "https://instagram.com/wafiens_",
+    instagramPortfolio: "https://instagram.com/le_fotoke",
+    lynkId: "https://lynk.id/lefotoke.",
+    canva: "https://www.canva.com/design/DAGRAICVpY/XRf9A9s9JuDUQsNsjguNcA/edit"
+  }
+};
+
+const roles = [
+  {
+    id: 'health',
+    percentage: 40,
+    title: 'Health Promoter & Educator',
+    color: '#EA580C', // Terracotta
+    bgColor: 'bg-[#EA580C]',
+    textColor: 'text-[#EA580C]',
+    borderColor: 'border-[#EA580C]',
+    description: 'Promotor Kesehatan & Edukator Publik dengan pengalaman strategis di kedinasan, industri K3, dan lingkungan akademis.',
+    highlights: [
+      'Internship Promotor K3 & AI Trainer - Dinkes Kulon Progo (Bidang P2P)',
+      'Internship Marketing & Promotor K3 - PT Merbabu Safety Indonesia',
+      'Konselor Sebaya Kesehatan Mental - Fakultas Vokasi UNY',
+      'Advokator Kesehatan Pedagang - Pasar Wates Kulon Progo'
+    ]
+  },
+  {
+    id: 'storyteller',
+    percentage: 35,
+    title: 'Visual Storyteller',
+    color: '#1C1917', // Ink / Charcoal
+    bgColor: 'bg-[#1C1917]',
+    textColor: 'text-[#1C1917]',
+    borderColor: 'border-[#1C1917]',
+    description: 'Videografer & Fotografer dokumentasi sinematik untuk 20+ event skala nasional, olahraga, medis, dan kampus.',
+    highlights: [
+      'Dieng Caldera Race Trail Run 2024 & Vertical Telomoyo 2023',
+      'Fun Run UNY 2025 & Timbulharjo Fun Run 2024',
+      'UGM Nursing Student @ RS Sardjito Hospital 2024',
+      'Founder CeritaKu Kulon Progo (Inisiatif Wellness Tourism)'
+    ]
+  },
+  {
+    id: 'builder',
+    percentage: 25,
+    title: 'Health-Tech Builder',
+    color: '#78716C', // Slate
+    bgColor: 'bg-[#78716C]',
+    textColor: 'text-[#78716C]',
+    borderColor: 'border-[#78716C]',
+    description: 'Pengembang solusi digital interaktif dan otomatisasi workflow surveilans kesehatan masyarakat.',
+    highlights: [
+      'SISE v2.4 (Enterprise Edition) - Surveillance Report Generator Dinkes',
+      'HyPrevent Platform - Interactive Hypertension Risk Assessment',
+      'Pemanfaatan AI Prompt Engineering & Web Tech (Astro, Tailwind, JS)'
+    ]
+  }
+];
+
+const skillChart = [
+  { name: 'Health Advocacy & Public Speaking', level: 95, category: 'Health' },
+  { name: 'Peer Counseling & Empathetic Support', level: 92, category: 'Counseling' },
+  { name: 'Video Editing & Motion (Premiere / CapCut)', level: 90, category: 'Visual' },
+  { name: 'Photography & Color Grading (Lightroom)', level: 88, category: 'Visual' },
+  { name: 'Web Dev & AI Prompt Engineering (Astro/JS)', level: 85, category: 'Tech' },
+  { name: 'Epidemiological Data Analysis (SPSS/Excel)', level: 82, category: 'Tech' }
+];
+
+const featuredProjects = [
+  {
+    id: 'sise',
+    name: 'SISE v2.4 (Enterprise Edition)',
+    title: 'Sistem Laporan Naratif Surveilans Kesehatan Kedinasan',
+    client: 'Dinas Kesehatan Kabupaten Kulon Progo (Bidang P2P)',
+    tags: ['Python', 'JavaScript Parser', 'Astro', 'Tailwind CSS', 'AI Prompting'],
+    badge: 'Enterprise Health-Tech',
+    description: 'Aplikasi otomatisasi surveilans epidemiologi yang menerjemahkan data mentah Excel/CSV dari puskesmas menjadi draf laporan naratif resmi kedinasan (Bab I–V) siap pakai.',
+    features: [
+      'Otomatisasi Laporan Bab I hingga Bab V standar Kemenkes/Dinkes',
+      'Parsing otomatis spreadsheet Puskesmas se-Kabupaten Kulon Progo',
+      'Penghematan waktu pembuatan laporan bulanan hingga 85%',
+      'Keamanan data lokal berbasis Web Client-side'
+    ],
+    interactiveSimulator: true
+  },
+  {
+    id: 'hyprevent',
+    name: 'HyPrevent Platform',
+    title: 'Interactive Hypertension Education & Risk Assessment',
+    client: 'Edukasi Mandiri & Publikasi Digital',
+    tags: ['HTML5', 'Tailwind CSS', 'JavaScript', 'Health Math'],
+    badge: 'Live Interactive Web App',
+    url: 'https://hyprevent.netlify.app',
+    description: 'Platform edukasi interaktif pencegahan hipertensi berbasis kalkulator asesmen risiko sistolik personal harian dengan rekomendasi gaya hidup presisi.',
+    features: [
+      'Kalkulator Risiko Sistolik/Diastolik realtime',
+      'Algoritma klasifikasi rekomendasi presisi WHO/Kemenkes',
+      'Interface ramah pengguna seluler (Mobile First design)'
+    ]
+  },
+  {
+    id: 'ceritaku',
+    name: 'CeritaKu Kulon Progo',
+    title: 'Wellness Tourism & Community Health Advocacy Initiative',
+    client: 'Dinas Pariwisata Kulon Progo',
+    tags: ['Visual Storytelling', 'Public Health Advocacy', 'Wellness Tourism'],
+    badge: 'Tourism & Health Synergy',
+    description: 'Inisiatif promosi pariwisata kesehatan yang menghubungkan keindahan alam Kulon Progo dengan gaya hidup aktif dan pemulihan kesehatan mental masyarakat.',
+    features: [
+      'Koleksi narasi visual sinematik destinasi Kulon Progo',
+      'Program advokasi kebugaran & kesehatan mental terpadu',
+      'Kemitraan strategis dengan pelaku pariwisata lokal'
+    ]
+  }
+];
+
+const photoStrip = [
+  { title: "Dieng Caldera Race 2024", cat: "Sport / Trail Run", gear: "Sony A6400 / Fujifilm XA-3" },
+  { title: "Vertical Telomoyo 2023", cat: "Sport / Trail Run", gear: "Sony A6400" },
+  { title: "Fun Run UNY 2025", cat: "Sport / Campus", gear: "Sony A6400" },
+  { title: "UGM Nursing @ RS Sardjito", cat: "Medical Documentation", gear: "Sony A6400" },
+  { title: "PKKMB UNY 2024", cat: "Campus Event", gear: "Fujifilm XA-3" },
+  { title: "Pasar Wates Health Advocacy", cat: "Public Health", gear: "Mobile / Camera" }
+];
+
+const galleryEvents = [
+  { title: "Dieng Caldera Race Trail Run 2024", roles: "Assistant Videographer & Photographer", cat: "Olahraga / Race", gear: "Fujifilm XA-3, Sony A6400", desc: "Dokumentasi pelari trail run medan ekstrem di dataran tinggi Dieng." },
+  { title: "Vertical Telomoyo Trail Run 2023", roles: "Main Videographer, Photographer & Editor", cat: "Olahraga / Race", gear: "Sony A6400", desc: "Liputan sinematik ajang lari gunung berkecepatan tinggi di Telomoyo." },
+  { title: "Fun Run UNY 2025", roles: "Videographer, Photographer & Editor", cat: "Olahraga / Race", gear: "Sony A6400", desc: "Dokumentasi lari gembira perayaan civitas akademika UNY." },
+  { title: "UGM Nursing Student @ RS Sardjito 2024", roles: "Videographer & Editor", cat: "Medis", gear: "Sony A6400", desc: "Dokumentasi operasional & praktik keperawatan UGM di RS Sardjito." },
+  { title: "PKKMB Universitas Negeri Yogyakarta 2024", roles: "Videographer, Photographer & Design Staff", cat: "Kampus UNY", gear: "Sony A6400 & Fujifilm XA-3", desc: "Penyusunan video aftermovie dan foto orientasi mahasiswa baru." },
+  { title: "Wonderoots Fakultas Vokasi 2025", roles: "Photographer", cat: "Kampus UNY", gear: "Sony A6400", desc: "Dokumentasi kegiatan gelar seni dan budaya vokasi." },
+  { title: "Ramadhan di Kampus (RDK) FV UNY 2024", roles: "Videographer, Photographer & Sie PDD", cat: "Kampus UNY", gear: "Fujifilm XA-3", desc: "Serangkaian dokumentasi kegiatan keagamaan dan sosial selama ramadhan." },
+  { title: "Timbulharjo Fun Run 2024", roles: "Photographer", cat: "Olahraga / Race", gear: "Sony A6400", desc: "Liputan foto olahraga kemasyarakatan di Timbulharjo." },
+  { title: "Grintii Apparel Hub 2023-2024", roles: "Photographer", cat: "Semua Event", gear: "Sony A6400", desc: "Sesi foto komersial katalog pakaian dan merchandise." }
+];
+
+const gearList = {
+  cameras: ["Sony A6400", "Fujifilm XA-3"],
+  lenses: ["Aspherical Super EBC Lens 55-200mm"],
+  accessories: ["Tripod Zomei"],
+  mobile: ["Oppo Reno 8", "Xiaomi Redmi Note 13 Pro", "Xiaomi Redmi 7"]
+};
+
+const randomFacts = [
+  { label: "Lokasi Basisfungsi", val: "Terbah, Pengasih, Kulon Progo, DI Yogyakarta" },
+  { label: "Hobi & Passion", val: "Enthusiast Trail Run Race (Dieng Caldera, Telomoyo)" },
+  { label: "Konseling Peer", val: "Konselor Sebaya Kesehatan Mental Aktif di UNY" },
+  { label: "Pendidikan", val: "D4 Promosi Kesehatan - Universitas Negeri Yogyakarta (2023-Sekarang)" }
+];
+---
+
+<Layout title="Muhammad Fadhil Al Wafie (Walex) — Portfolio Editorial">
+  
+  <!-- HEADER / NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-[#FBFBF9]/90 backdrop-blur-md border-b border-[#E7E5E4] transition-all">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="font-serif text-2xl font-bold tracking-tight text-[#1C1917] hover:text-[#EA580C] transition-colors">
+        walex<span class="text-[#EA580C]">.</span>
+      </a>
+      
+      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-[#78716C]">
+        <a href="#karya" class="hover:text-[#1C1917] transition-colors">Karya</a>
+        <a href="#peran" class="hover:text-[#1C1917] transition-colors">Peran & Skill</a>
+        <a href="#tentang" class="hover:text-[#1C1917] transition-colors">Tentang & Gear</a>
+        <a href="#rekam-jejak" class="hover:text-[#1C1917] transition-colors">Galeri Event</a>
+        <a href="#kontak" class="hover:text-[#1C1917] transition-colors">Kontak</a>
+      </nav>
+
+      <a href="#kontak" class="inline-flex items-center gap-2 px-4 py-2 border border-[#1C1917] text-xs font-mono uppercase tracking-wider text-[#1C1917] hover:bg-[#1C1917] hover:text-[#FBFBF9] transition-all">
+        Hubungi Saya
+      </a>
+    </div>
+  </header>
+
+  <main class="space-y-24 md:space-y-32 pb-24">
+    
+    <!-- HERO SECTION -->
+    <section class="max-w-6xl mx-auto px-6 pt-16 md:pt-24 space-y-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#E7E5E4]/50 border border-[#E7E5E4] text-xs font-mono text-[#78716C] rounded-full">
+        <span class="w-2 h-2 rounded-full bg-[#EA580C] animate-pulse"></span>
+        Terbah, Pengasih, Kulon Progo, DIY
+      </div>
+
+      <div class="space-y-6 max-w-4xl">
+        <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-normal leading-[1.15] text-[#1C1917]">
+          Menerjemahkan Data &amp; Narasi Visual Menjadi <span class="italic text-[#EA580C]">Solusi Berdampak.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-[#78716C] leading-relaxed max-w-2xl font-normal">
+          Saya <strong class="text-[#1C1917] font-semibold">Muhammad Fadhil Al Wafie (Walex)</strong>. Mahasiswa Promosi Kesehatan UNY yang memadukan komunikasi edukasi kesehatan, dokumentasi sinematik, dan pengembangan teknologi surveilans.
+        </p>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-[#E7E5E4] text-left">
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]">40%</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Promotor Kesehatan</div>
+        </div>
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]">20+</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Major Event Photographed</div>
+        </div>
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]">v2.4</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">SISE Dinkes App</div>
+        </div>
+        <div>
+          <div class="font-serif text-3xl font-bold text-[#1C1917]">95%</div>
+          <div class="text-xs font-mono text-[#78716C] uppercase tracking-wider mt-1">Health Advocacy Rating</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HORIZONTAL PHOTO STRIP (Adham Dannaway Style) -->
+    <section class="border-y border-[#E7E5E4] py-8 bg-[#FBFBF9] overflow-hidden">
+      <div class="max-w-6xl mx-auto px-6 mb-4 flex justify-between items-center">
+        <span class="text-xs font-mono text-[#78716C] uppercase tracking-widest">Dokumentasi Lapangan &amp; Event Sinematik</span>
+        <span class="text-xs font-mono text-[#EA580C]">← Geser Horizontal →</span>
+      </div>
+      
+      <div class="flex space-x-6 overflow-x-auto px-6 pb-4 scrollbar-thin">
+        {photoStrip.map((photo, i) => (
+          <div class="flex-none w-72 sm:w-80 group relative bg-[#E7E5E4]/40 border border-[#E7E5E4] p-5 rounded-none transition-all hover:border-[#EA580C]">
+            <div class="h-44 bg-[#1C1917]/5 flex flex-col justify-between p-4 border border-[#E7E5E4] relative overflow-hidden">
+              <span class="text-4xl font-serif font-bold text-[#1C1917]/10 group-hover:text-[#EA580C]/20 transition-colors">0{i+1}</span>
+              <div class="text-xs font-mono text-[#78716C]">{photo.gear}</div>
+            </div>
+            <div class="mt-4 space-y-1">
+              <span class="text-[10px] font-mono uppercase tracking-wider text-[#EA580C] bg-[#EA580C]/10 px-2 py-0.5 inline-block">{photo.cat}</span>
+              <h4 class="font-serif font-semibold text-[#1C1917] text-base group-hover:text-[#EA580C] transition-colors">{photo.title}</h4>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- PIE CHART IDENTITY SECTION (Adham Dannaway Hybrid Lens) -->
+    <section id="peran" class="max-w-6xl mx-auto px-6">
+      <div class="space-y-4 mb-12">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Identitas Tiga Lensa</span>
+        <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Konsep Hibrida Tiga Lensa Kebahlian</h2>
+        <p class="text-[#78716C] max-w-2xl">
+          Arahkan kursor atau ketuk sektor diagram lingkaran di bawah untuk menjelajahi rincian peran dan kontribusi nyata saya.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center bg-[#E7E5E4]/20 border border-[#E7E5E4] p-8 md:p-12">
+        
+        <!-- SVG Pie Chart -->
+        <div class="lg:col-span-5 flex flex-col items-center justify-center relative">
+          <div class="w-64 h-64 md:w-80 md:h-80 relative">
+            <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90 drop-shadow-sm">
+              <!-- 40% Health Promoter (#EA580C) : 0 to 144 deg -->
+              <path
+                id="slice-health"
+                d="M 50 50 L 50 0 A 50 50 0 0 1 97.55 65.45 Z"
+                fill="#EA580C"
+                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 transform origin-center slice-btn"
+                data-target="role-health"
+              ></path>
+              <!-- 35% Visual Storyteller (#1C1917) : 144 to 270 deg -->
+              <path
+                id="slice-storyteller"
+                d="M 50 50 L 97.55 65.45 A 50 50 0 0 1 0 50 Z"
+                fill="#1C1917"
+                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 transform origin-center slice-btn"
+                data-target="role-storyteller"
+              ></path>
+              <!-- 25% Health-Tech Builder (#78716C) : 270 to 360 deg -->
+              <path
+                id="slice-builder"
+                d="M 50 50 L 0 50 A 50 50 0 0 1 50 0 Z"
+                fill="#78716C"
+                class="cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-105 transform origin-center slice-btn"
+                data-target="role-builder"
+              ></path>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="w-24 h-24 bg-[#FBFBF9] rounded-full border border-[#E7E5E4] flex flex-col items-center justify-center text-center shadow-inner">
+                <span class="text-xs font-mono text-[#78716C]">TOTAL</span>
+                <span class="font-serif text-lg font-bold text-[#1C1917]">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-4 mt-8">
+            <button data-target="role-health" class="slice-btn flex items-center gap-2 text-xs font-mono text-[#1C1917] hover:text-[#EA580C]">
+              <span class="w-3 h-3 bg-[#EA580C] inline-block"></span> 40% Health
+            </button>
+            <button data-target="role-storyteller" class="slice-btn flex items-center gap-2 text-xs font-mono text-[#1C1917] hover:text-[#EA580C]">
+              <span class="w-3 h-3 bg-[#1C1917] inline-block"></span> 35% Storyteller
+            </button>
+            <button data-target="role-builder" class="slice-btn flex items-center gap-2 text-xs font-mono text-[#1C1917] hover:text-[#EA580C]">
+              <span class="w-3 h-3 bg-[#78716C] inline-block"></span> 25% Tech
+            </button>
+          </div>
+        </div>
+
+        <!-- Role Detail Display Panel -->
+        <div class="lg:col-span-7">
+          {roles.map((r, index) => (
+            <div 
+              id={`role-${r.id}`} 
+              class={`role-panel space-y-6 transition-all duration-300 ${index === 0 ? 'block' : 'hidden'}`}
+            >
+              <div class="flex items-center justify-between border-b border-[#E7E5E4] pb-4">
+                <div class="space-y-1">
+                  <span class={`text-xs font-mono font-semibold uppercase tracking-wider ${r.textColor}`}>
+                    {r.percentage}% Alokasi Fokus
+                  </span>
+                  <h3 class="font-serif text-2xl md:text-3xl font-bold text-[#1C1917]">{r.title}</h3>
+                </div>
+                <span class={`text-4xl font-serif font-bold ${r.textColor}`}>{r.percentage}%</span>
+              </div>
+
+              <p class="text-[#78716C] text-base leading-relaxed">{r.description}</p>
+
+              <div class="space-y-3">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-[#1C1917]">Pengalaman &amp; Proyek Kunci:</h4>
+                <ul class="space-y-2">
+                  {r.highlights.map(item => (
+                    <li class="flex items-start gap-3 text-sm text-[#1C1917]">
+                      <span class={`w-1.5 h-1.5 rounded-full ${r.bgColor} mt-2 flex-shrink-0`}></span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE SKILL BAR CHART -->
+    <section class="max-w-6xl mx-auto px-6 space-y-12">
+      <div class="space-y-4">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Tingkat Kompetensi</span>
+        <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Matriks Keahlian Lintas Disiplin</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {skillChart.map((skill) => (
+          <div class="space-y-2 border-b border-[#E7E5E4] pb-4">
+            <div class="flex justify-between items-center text-sm">
+              <span class="font-medium text-[#1C1917]">{skill.name}</span>
+              <span class="font-mono text-xs text-[#EA580C] font-semibold">{skill.level}%</span>
+            </div>
+            <div class="w-full h-2 bg-[#E7E5E4] overflow-hidden relative">
+              <div 
+                class="h-full bg-[#1C1917] transition-all duration-1000 ease-out" 
+                style={`width: ${skill.level}%`}
+              ></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- FEATURED PROJECTS (Editorial Case Studies) -->
+    <section id="karya" class="max-w-6xl mx-auto px-6 space-y-12">
+      <div class="space-y-4">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Studi Kasus Unggulan</span>
+        <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Karya Health-Tech &amp; Inisiatif</h2>
+      </div>
+
+      <div class="space-y-16">
+        {featuredProjects.map((proj) => (
+          <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border border-[#E7E5E4] p-8 md:p-10 bg-[#FBFBF9] hover:border-[#EA580C] transition-all">
+            
+            <div class="lg:col-span-7 space-y-6">
+              <div class="space-y-2">
+                <div class="flex flex-wrap items-center gap-3">
+                  <span class="text-xs font-mono uppercase tracking-wider bg-[#EA580C]/10 text-[#EA580C] px-3 py-1 font-semibold">
+                    {proj.badge}
+                  </span>
+                  <span class="text-xs font-mono text-[#78716C]">{proj.client}</span>
+                </div>
+                <h3 class="font-serif text-2xl md:text-3xl font-bold text-[#1C1917]">{proj.name}</h3>
+                <p class="text-sm font-mono text-[#78716C]">{proj.title}</p>
+              </div>
+
+              <p class="text-[#78716C] leading-relaxed text-base">{proj.description}</p>
+
+              <div class="space-y-2">
+                <span class="text-xs font-mono uppercase text-[#1C1917] font-semibold">Fitur / Keunggulan Utama:</span>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#78716C]">
+                  {proj.features.map(f => (
+                    <li class="flex items-center gap-2">
+                      <span class="text-[#EA580C]">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                {proj.tags.map(t => (
+                  <span class="text-[11px] font-mono bg-[#E7E5E4]/60 text-[#1C1917] px-2.5 py-1">
+                    {t}
+                  </span>
+                ))}
+              </div>
+
+              <div class="pt-4 flex flex-wrap items-center gap-4">
+                {proj.url && (
+                  <a 
+                    href={proj.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EA580C] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#1C1917] transition-all"
+                  >
+                    Buka App Live ↗
+                  </a>
+                )}
+
+                {proj.interactiveSimulator && (
+                  <button 
+                    id="open-sise-modal"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1C1917] text-[#FBFBF9] text-xs font-mono uppercase tracking-wider hover:bg-[#EA580C] transition-all"
+                  >
+                    ⚡ Uji Simulator SISE v2.4
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <!-- Preview / Mockup Area -->
+            <div class="lg:col-span-5 bg-[#E7E5E4]/40 border border-[#E7E5E4] p-6 space-y-4 font-mono text-xs">
+              <div class="flex items-center justify-between border-b border-[#E7E5E4] pb-3 text-[#78716C]">
+                <span>STATUS: ACTIVE SYSTEM</span>
+                <span>{proj.id.toUpperCase()}</span>
+              </div>
+              
+              {proj.id === 'sise' && (
+                <div class="space-y-3 bg-[#1C1917] text-[#E7E5E4] p-4 rounded-none">
+                  <div class="text-[#EA580C] font-semibold">> SYSTEM LOG SISE v2.4</div>
+                  <p class="text-[11px] text-[#78716C]">Input: CSV Data Puskesmas Pengasih II</p>
+                  <p class="text-[11px] text-emerald-400">Status: Parsing 1,240 Epidemiological Records...</p>
+                  <div class="border-t border-gray-800 pt-2 text-[10px] space-y-1 text-gray-300">
+                    <div>Bab I: Pendahuluan [AUTO GENERATED]</div>
+                    <div>Bab II: Gambaran Umum &amp; Demografi [DONE]</div>
+                    <div>Bab III: Analisis Situasi Derajat Kesehatan [DONE]</div>
+                    <div>Bab IV: Evaluasi Program P2P [DONE]</div>
+                    <div>Bab V: Kesimpulan &amp; Rekomendasi Official [DONE]</div>
+                  </div>
+                </div>
+              )}
+
+              {proj.id === 'hyprevent' && (
+                <div class="space-y-3 bg-[#FBFBF9] border border-[#E7E5E4] p-4 text-[#1C1917]">
+                  <div class="text-[#EA580C] font-bold">Kalkulator Risiko Hipertensi Harian</div>
+                  <div class="space-y-2 text-[11px]">
+                    <div class="flex justify-between"><span>Sistolik:</span> <span class="font-bold">135 mmHg</span></div>
+                    <div class="flex justify-between"><span>Diastolik:</span> <span class="font-bold">85 mmHg</span></div>
+                    <div class="p-2 bg-amber-50 border border-amber-200 text-amber-900 font-semibold text-[10px]">
+                      Kategori: Prehipertensi (Risiko Sedang)
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {proj.id === 'ceritaku' && (
+                <div class="space-y-3 bg-[#1C1917] text-white p-4">
+                  <div class="text-[#EA580C] font-semibold">CeritaKu Kulon Progo Initiative</div>
+                  <p class="text-[11px] text-gray-300">Promosi Wisata Kesehatan &amp; Kebugaran Alam</p>
+                  <div class="text-[10px] text-gray-400 border-l-2 border-[#EA580C] pl-2">
+                    "Menghubungkan ruang terbuka hijau Kulon Progo untuk reduksi stres masyarakat."
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- RANDOM FACTS & GEAR GRID -->
+    <section id="tentang" class="max-w-6xl mx-auto px-6 space-y-12">
+      <div class="space-y-4">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Fakta Ringkas &amp; Perangkat</span>
+        <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Di Luar Kode &amp; Lensa</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        
+        <!-- Column 1: Facts -->
+        <div class="space-y-6 bg-[#E7E5E4]/20 border border-[#E7E5E4] p-8">
+          <h3 class="font-serif text-2xl font-bold text-[#1C1917] border-b border-[#E7E5E4] pb-4">Profil &amp; Fakta Personal</h3>
+          
+          <div class="space-y-4">
+            {randomFacts.map(fact => (
+              <div class="space-y-1">
+                <span class="text-xs font-mono text-[#EA580C] uppercase tracking-wider">{fact.label}</span>
+                <p class="text-sm font-medium text-[#1C1917]">{fact.val}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="pt-4 border-t border-[#E7E5E4]">
+            <span class="text-xs font-mono text-[#78716C]">Sertifikasi &amp; Peran Aktif:</span>
+            <p class="text-xs text-[#1C1917] mt-1 leading-relaxed">
+              Konselor Sebaya Kesehatan Mental Fakultas Vokasi UNY (2025–2026) • Trainer AI Surveilans Dinkes Kulon Progo.
+            </p>
+          </div>
+        </div>
+
+        <!-- Column 2: Camera Gear -->
+        <div class="space-y-6 bg-[#1C1917] text-[#FBFBF9] p-8">
+          <h3 class="font-serif text-2xl font-bold border-b border-gray-800 pb-4 text-[#FBFBF9]">Amunisi Gear &amp; Perangkat</h3>
+
+          <div class="space-y-4 text-xs font-mono">
+            <div>
+              <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Kamera Utama:</span>
+              <ul class="mt-1 space-y-1 text-gray-300">
+                {gearList.cameras.map(c => <li>📷 {c}</li>)}
+              </ul>
+            </div>
+
+            <div>
+              <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Lensa &amp; Aksesori:</span>
+              <ul class="mt-1 space-y-1 text-gray-300">
+                {gearList.lenses.map(l => <li>🔍 {l}</li>)}
+                {gearList.accessories.map(a => <li>🔭 {a}</li>)}
+              </ul>
+            </div>
+
+            <div>
+              <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Mobile &amp; Field Device:</span>
+              <ul class="mt-1 space-y-1 text-gray-300">
+                {gearList.mobile.map(m => <li>📱 {m}</li>)}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- HALL OF RECORD (Filterable Gallery) -->
+    <section id="rekam-jejak" class="max-w-6xl mx-auto px-6 space-y-8">
+      <div class="space-y-4">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Rekam Jejak Event</span>
+        <h2 class="font-serif text-3xl md:text-4xl font-normal text-[#1C1917]">Galeri Liputan &amp; Dokumentasi</h2>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="flex flex-wrap gap-2 border-b border-[#E7E5E4] pb-4">
+        <button class="filter-btn active px-4 py-2 border border-[#1C1917] bg-[#1C1917] text-white text-xs font-mono uppercase transition-all" data-filter="all">
+          Semua Event
+        </button>
+        <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter="Olahraga / Race">
+          Olahraga / Race
+        </button>
+        <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter="Kampus UNY">
+          Kampus UNY
+        </button>
+        <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter="Medis">
+          Medis
+        </button>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {galleryEvents.map((ev) => (
+          <div 
+            class="gallery-item group bg-[#E7E5E4]/20 border border-[#E7E5E4] p-6 space-y-4 cursor-pointer hover:border-[#EA580C] transition-all"
+            data-category={ev.cat}
+            data-title={ev.title}
+            data-[#roles]={ev.roles}
+            data-gear={ev.gear}
+            data-desc={ev.desc}
+          >
+            <div class="flex justify-between items-start">
+              <span class="text-[10px] font-mono uppercase bg-[#EA580C]/10 text-[#EA580C] px-2 py-0.5">{ev.cat}</span>
+              <span class="text-xs font-mono text-[#78716C]">↗</span>
+            </div>
+
+            <h4 class="font-serif font-bold text-lg text-[#1C1917] group-hover:text-[#EA580C] transition-colors">
+              {ev.title}
+            </h4>
+
+            <p class="text-xs text-[#78716C] line-clamp-2">{ev.desc}</p>
+
+            <div class="pt-2 border-t border-[#E7E5E4] text-[11px] font-mono text-[#1C1917]">
+              <span>Peran: {ev.roles}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CONTACT SECTION (Netlify Form Ready) -->
+    <section id="kontak" class="max-w-6xl mx-auto px-6">
+      <div class="bg-[#1C1917] text-[#FBFBF9] p-8 md:p-16 border border-[#1C1917] grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <div class="lg:col-span-5 space-y-6">
+          <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Mulai Kolaborasi</span>
+          <h2 class="font-serif text-3xl md:text-5xl font-normal text-white">Mari Bekerja Sama.</h2>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Terbuka untuk konsultasi promosi kesehatan, otomatisasi laporan surveilans, serta dokumentasi sinematik event olahraga/kampus.
+          </p>
+
+          <div class="space-y-3 pt-4 text-xs font-mono text-gray-300">
+            <div>📍 Terbah, Pengasih, Kulon Progo, DIY</div>
+            <div>📱 WhatsApp: <a href="https://wa.me/6285717225399" class="text-[#EA580C] hover:underline">+62 857-1722-5399</a></div>
+            <div>✉️ Email: fadhilalwafie@gmail.com</div>
+            <div>📷 IG Portfolio: <a href="https://instagram.com/le_fotoke" target="_blank" class="text-[#EA580C] hover:underline">@le_fotoke</a></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <form 
+            name="contact" 
+            method="POST" 
+            data-netlify="true" 
+            class="space-y-6 font-mono text-xs"
+          >
+            <input type="hidden" name="form-name" value="contact" />
+
+            <div class="space-y-2">
+              <label for="name" class="block uppercase tracking-wider text-gray-300">Nama Lengkap *</label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                required 
+                placeholder="Masukkan nama Anda..."
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label for="email" class="block uppercase tracking-wider text-gray-300">Alamat Email *</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required 
+                placeholder="nama@domain.com"
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label for="subject" class="block uppercase tracking-wider text-gray-300">Subjek Proyek / Peran *</label>
+              <select 
+                id="subject" 
+                name="subject" 
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+              >
+                <option value="Health Promotion">Konsultasi Promosi Kesehatan / K3</option>
+                <option value="Health-Tech">Implementasi SISE v2.4 / Health-Tech</option>
+                <option value="Video Photography">Dokumentasi Event / Foto / Video</option>
+                <option value="Peer Counseling">Konseling Sebaya / Lainnya</option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <label for="message" class="block uppercase tracking-wider text-gray-300">Pesan *</label>
+              <textarea 
+                id="message" 
+                name="message" 
+                rows="4" 
+                required 
+                placeholder="Tuliskan detail kolaborasi atau pertanyaan..."
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+              ></textarea>
+            </div>
+
+            <button 
+              type="submit" 
+              class="w-full py-4 bg-[#EA580C] text-white uppercase tracking-widest font-bold hover:bg-white hover:text-[#1C1917] transition-all"
+            >
+              Kirim Pesan (Netlify Form Ready)
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-[#E7E5E4] py-8 bg-[#FBFBF9] text-xs font-mono text-[#78716C]">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        © 2026 <strong class="text-[#1C1917]">Muhammad Fadhil Al Wafie (Walex)</strong>. Hak Cipta Dilindungi.
+      </div>
+      <div class="flex items-center gap-4">
+        <a href={profile.contacts.lynkId} target="_blank" class="hover:text-[#EA580C]">Lynk.id</a>
+        <span>•</span>
+        <a href={profile.contacts.canva} target="_blank" class="hover:text-[#EA580C]">Canva Portfolio</a>
+        <span>•</span>
+        <a href="#" class="hover:text-[#EA580C]">Kembali ke Atas ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL LIGHTBOX GALLERIES -->
+  <div id="gallery-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-[#FBFBF9] border border-[#E7E5E4] max-w-xl w-full p-6 md:p-8 space-y-6 relative">
+      <button id="close-modal" class="absolute top-4 right-4 text-xl font-mono font-bold text-[#1C1917] hover:text-[#EA580C]">✕</button>
+      
+      <div class="space-y-2">
+        <span id="modal-cat" class="text-xs font-mono uppercase bg-[#EA580C]/10 text-[#EA580C] px-2.5 py-1 inline-block">CATEGORY</span>
+        <h3 id="modal-title" class="font-serif text-2xl font-bold text-[#1C1917]">Event Title</h3>
+      </div>
+
+      <p id="modal-desc" class="text-sm text-[#78716C] leading-relaxed">Description...</p>
+
+      <div class="space-y-2 border-t border-[#E7E5E4] pt-4 text-xs font-mono text-[#1C1917]">
+        <div><strong class="text-[#EA580C]">Peran:</strong> <span id="modal-roles">-</span></div>
+        <div><strong class="text-[#EA580C]">Gear Diterapkan:</strong> <span id="modal-gear">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SIMULATOR SISE v2.4 -->
+  <div id="sise-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-[#1C1917] text-[#FBFBF9] border border-gray-800 max-w-2xl w-full p-6 md:p-8 space-y-6 relative font-mono text-xs">
+      <button id="close-sise-modal" class="absolute top-4 right-4 text-xl font-bold text-white hover:text-[#EA580C]">✕</button>
+
+      <div class="space-y-1">
+        <span class="text-[#EA580C] text-[10px] uppercase tracking-wider">ENTERPRISE SIMULATOR</span>
+        <h3 class="font-serif text-2xl text-white font-bold">SISE v2.4 Laporan Naratif Generator</h3>
+        <p class="text-gray-400 text-[11px]">Dinas Kesehatan Kabupaten Kulon Progo (Bidang P2P)</p>
+      </div>
+
+      <div class="space-y-4 bg-black/50 p-4 border border-gray-800">
+        <div class="space-y-1">
+          <label class="text-gray-300">Pilih Puskesmas Sample:</label>
+          <select id="sim-puskesmas" class="w-full bg-gray-900 border border-gray-700 p-2 text-white">
+            <option value="Pengasih II">Puskesmas Pengasih II</option>
+            <option value="Wates">Puskesmas Wates</option>
+            <option value="Panjatan I">Puskesmas Panjatan I</option>
+          </select>
+        </div>
+
+        <button id="sim-run-btn" class="w-full py-2.5 bg-[#EA580C] text-white font-bold uppercase hover:bg-white hover:text-[#1C1917] transition-all">
+          Generate Draf Naratif Resmi
+        </button>
+      </div>
+
+      <div id="sim-output" class="hidden bg-gray-950 p-4 border border-gray-800 space-y-2 text-[11px] text-gray-300 max-h-48 overflow-y-auto">
+        <div class="text-emerald-400 font-bold">[SUCCESS] Draf Naratif Kedinasan Terbentuk:</div>
+        <p class="italic text-gray-400" id="sim-text-output"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VANILLA JAVASCRIPT LOGIC -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // 1. PIE CHART INTERACTION
+      const sliceBtns = document.querySelectorAll('.slice-btn');
+      const rolePanels = document.querySelectorAll('.role-panel');
+
+      sliceBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          
+          rolePanels.forEach(panel => {
+            if (panel.id === targetId) {
+              panel.classList.remove('hidden');
+            } else {
+              panel.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      // 2. GALLERY FILTERING
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const galleryItems = document.querySelectorAll('.gallery-item');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('bg-[#1C1917]', 'text-white');
+            b.classList.add('bg-[#FBFBF9]', 'text-[#1C1917]');
+          });
+
+          btn.classList.remove('bg-[#FBFBF9]', 'text-[#1C1917]');
+          btn.classList.add('bg-[#1C1917]', 'text-white');
+
+          const filter = btn.getAttribute('data-filter');
+
+          galleryItems.forEach(item => {
+            const cat = item.getAttribute('data-category');
+            if (filter === 'all' || cat === filter) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // 3. LIGHTBOX MODAL FOR GALLERY
+      const modal = document.getElementById('gallery-modal');
+      const closeModal = document.getElementById('close-modal');
+      const modalCat = document.getElementById('modal-cat');
+      const modalTitle = document.getElementById('modal-title');
+      const modalDesc = document.getElementById('modal-desc');
+      const modalRoles = document.getElementById('modal-roles');
+      const modalGear = document.getElementById('modal-gear');
+
+      galleryItems.forEach(item => {
+        item.addEventListener('click', () => {
+          modalCat.textContent = item.getAttribute('data-category') || '';
+          modalTitle.textContent = item.getAttribute('data-title') || '';
+          modalDesc.textContent = item.getAttribute('data-desc') || '';
+          modalRoles.textContent = item.getAttribute('data-roles') || '-';
+          modalGear.textContent = item.getAttribute('data-gear') || '-';
+
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        });
+      });
+
+      if (closeModal) {
+        closeModal.addEventListener('click', () => {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        });
+      }
+
+      // 4. SISE v2.4 SIMULATOR MODAL
+      const siseModal = document.getElementById('sise-modal');
+      const openSiseBtn = document.getElementById('open-sise-modal');
+      const closeSiseBtn = document.getElementById('close-sise-modal');
+      const simRunBtn = document.getElementById('sim-run-btn');
+      const simOutput = document.getElementById('sim-output');
+      const simTextOutput = document.getElementById('sim-text-output');
+      const simPuskesmas = document.getElementById('sim-puskesmas');
+
+      if (openSiseBtn) {
+        openSiseBtn.addEventListener('click', () => {
+          siseModal.classList.remove('hidden');
+          siseModal.classList.add('flex');
+        });
+      }
+
+      if (closeSiseBtn) {
+        closeSiseBtn.addEventListener('click', () => {
+          siseModal.classList.add('hidden');
+          siseModal.classList.remove('flex');
+        });
+      }
+
+      if (simRunBtn) {
+        simRunBtn.addEventListener('click', () => {
+          const pusk = simPuskesmas.value;
+          simOutput.classList.remove('hidden');
+          simTextOutput.textContent = `BAB I PENDAHULUAN: Berdasarkan data laporan surveilans epidemiologi P2P ${pusk} bulan Agustus 2026, tercatat penurunan tren tren penyakit menular sebesar 12.4%. Rekomendasi tindakan intervensi promosi kesehatan primer disiapkan untuk bidang P2P Dinas Kesehatan Kabupaten Kulon Progo.`;
+        });
+      }
+    });
+  </script>
+
+</Layout>
