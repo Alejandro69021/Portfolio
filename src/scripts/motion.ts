@@ -208,12 +208,19 @@ function initHero() {
   const btnReset      = document.getElementById('hero-btn-reset');
   const reduced       = prefersReduced();
 
-  // 1. Load animation: halves slide in from edges, then text columns fade up
+  // 1. Load animation (State D): halves slide in from edges, then text columns fade up
+  // hero-loading carries the transition-delay for initial entry; removed after animation completes
+  // so hover return transitions are not delayed
   if (reduced) {
     heroSection.classList.add('hero-joined');
   } else {
+    heroSection.classList.add('hero-loading');
     requestAnimationFrame(() => {
-      setTimeout(() => { heroSection.classList.add('hero-joined'); }, 60);
+      requestAnimationFrame(() => {
+        heroSection.classList.add('hero-joined');
+        // Remove hero-loading after columns have faded in (~1550ms = 750ms delay + ~600ms transition + buffer)
+        setTimeout(() => { heroSection.classList.remove('hero-loading'); }, 1600);
+      });
     });
   }
 
@@ -608,10 +615,15 @@ function initLightbox() {
   });
 }
 
-// ── M9: Form floating label + validation + submit state ────────────────────
+// ── M9: Form floating label + validation + AJAX submit (Netlify Forms) ────
 function initContactForm() {
   const form = document.querySelector<HTMLFormElement>('form[name="contact"]');
   if (!form) return;
+
+  const btnSubmit = form.querySelector<HTMLButtonElement>('.btn-submit');
+  const btnText = form.querySelector<HTMLElement>('.btn-submit-text');
+  const btnLoading = form.querySelector<HTMLElement>('.btn-submit-loading');
+  const feedback = document.getElementById('form-feedback');
 
   // Floating labels
   form.querySelectorAll<HTMLElement>('.form-field input, .form-field textarea').forEach(el => {
@@ -627,29 +639,78 @@ function initContactForm() {
     check();
   });
 
-  // Submit state simulation
-  form.addEventListener('submit', e => {
-    const btn = form.querySelector<HTMLElement>('.btn-submit');
+  const showFeedback = (type: 'success' | 'error', message: string) => {
+    if (!feedback) return;
+    feedback.className = `form-feedback form-feedback-${type}`;
+    feedback.textContent = message;
+    feedback.classList.remove('hidden');
+    if (type === 'success') {
+      setTimeout(() => feedback.classList.add('hidden'), 8000);
+    }
+  };
+
+  const setLoading = (loading: boolean) => {
+    if (btnSubmit) btnSubmit.disabled = loading;
+    btnText?.classList.toggle('hidden', loading);
+    btnLoading?.classList.toggle('hidden', !loading);
+    btnSubmit?.classList.toggle('loading', loading);
+  };
+
+  // AJAX submit via Fetch (Netlify Forms)
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
     // Validate required fields
     let valid = true;
-    form.querySelectorAll<HTMLInputElement>('[required]').forEach(field => {
+    form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]').forEach(field => {
       if (!field.value.trim()) {
         field.classList.add('invalid');
         field.addEventListener('input', () => field.classList.remove('invalid'), { once: true });
         valid = false;
       }
     });
-    if (!valid) { e.preventDefault(); return; }
 
-    if (btn) {
-      btn.classList.add('loading');
-      btn.textContent = 'Mengirim...';
-      // Netlify handles real submit; this is visual feedback only
-      setTimeout(() => {
-        btn.classList.remove('loading');
-        btn.classList.add('success');
-        btn.textContent = 'Pesan Terkirim!';
-      }, 2000);
+    // Email format check
+    const emailField = form.querySelector<HTMLInputElement>('input[type="email"]');
+    if (emailField && emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+      emailField.classList.add('invalid');
+      emailField.addEventListener('input', () => emailField.classList.remove('invalid'), { once: true });
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    setLoading(true);
+    feedback?.classList.add('hidden');
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString(),
+      });
+
+      if (response.ok) {
+        setLoading(false);
+        btnSubmit?.classList.add('success');
+        if (btnText) btnText.textContent = '✓ Pesan Terkirim!';
+        showFeedback('success', 'Terima kasih! Pesan Anda telah terkirim. Saya akan merespons dalam 1–2 hari kerja.');
+        form.reset();
+        // Reset floating labels after form reset
+        form.querySelectorAll<HTMLElement>('.form-field label').forEach(l => l.classList.remove('floated'));
+
+        // Restore button after 4s
+        setTimeout(() => {
+          btnSubmit?.classList.remove('success');
+          if (btnText) btnText.textContent = 'Kirim Pesan';
+        }, 4000);
+      } else {
+        throw new Error(`Server responded with ${response.status}`);
+      }
+    } catch {
+      setLoading(false);
+      showFeedback('error', 'Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via WhatsApp.');
     }
   });
 }

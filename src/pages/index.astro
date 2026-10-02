@@ -702,11 +702,11 @@ try {
         <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Karya Health-Tech &amp; Inisiatif</h2>
       </div>
 
-      <div class="space-y-16" data-stagger="120">
+      <div class="space-y-16">
         {featuredProjects.map((proj) => (
-          <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border border-[#E7E5E4] p-8 md:p-10 bg-[#FBFBF9] hover:border-[#EA580C] transition-all card-hover" data-reveal="fade-up">
+          <article class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start border border-[#E7E5E4] p-8 md:p-10 bg-[#FBFBF9] hover:border-[#EA580C] transition-all card-hover">
             
-            <div class="lg:col-span-7 space-y-6">
+            <div class="lg:col-span-7 space-y-6" data-reveal="slide-left">
               <div class="space-y-2">
                 <div class="flex flex-wrap items-center gap-3">
                   <span class="text-xs font-mono uppercase tracking-wider bg-[#EA580C]/10 text-[#EA580C] px-3 py-1 font-semibold">
@@ -731,9 +731,9 @@ try {
                 </ul>
               </div>
 
-              <div class="flex flex-wrap gap-2 pt-2">
+              <div class="flex flex-wrap gap-2 pt-2" data-stagger="80">
                 {proj.tags.map(t => (
-                  <span class="text-[11px] font-mono bg-[#E7E5E4]/60 text-[#1C1917] px-2.5 py-1">
+                  <span class="text-[11px] font-mono bg-[#E7E5E4]/60 text-[#1C1917] px-2.5 py-1" data-reveal="fade">
                     {t}
                   </span>
                 ))}
@@ -763,7 +763,7 @@ try {
             </div>
 
             <!-- Preview / Mockup Area -->
-            <div class="lg:col-span-5 bg-[#E7E5E4]/40 border border-[#E7E5E4] p-6 space-y-4 font-mono text-xs">
+            <div class="lg:col-span-5 bg-[#E7E5E4]/40 border border-[#E7E5E4] p-6 space-y-4 font-mono text-xs" data-reveal="slide-right">
               <div class="flex items-center justify-between border-b border-[#E7E5E4] pb-3 text-[#78716C]">
                 <span>STATUS: ACTIVE SYSTEM</span>
                 <span>{proj.id.toUpperCase()}</span>
@@ -848,15 +848,15 @@ try {
         <div class="space-y-6 bg-[#1C1917] text-[#FBFBF9] p-8 card-hover" data-reveal="slide-right">
           <h3 class="font-serif text-2xl font-bold border-b border-gray-800 pb-4 text-[#FBFBF9]">Amunisi Gear &amp; Perangkat</h3>
 
-          <div class="space-y-4 text-xs font-mono">
-            <div>
+          <div class="space-y-4 text-xs font-mono" data-stagger="60">
+            <div data-reveal="fade-up">
               <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Kamera Utama:</span>
               <ul class="mt-1 space-y-1 text-gray-300">
                 {gearList.cameras.map(c => <li><span class="text-[#EA580C]">—</span> {c}</li>)}
               </ul>
             </div>
 
-            <div>
+            <div data-reveal="fade-up">
               <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Lensa &amp; Aksesori:</span>
               <ul class="mt-1 space-y-1 text-gray-300">
                 {gearList.lenses.map(l => <li><span class="text-[#EA580C]">—</span> {l}</li>)}
@@ -864,7 +864,7 @@ try {
               </ul>
             </div>
 
-            <div>
+            <div data-reveal="fade-up">
               <span class="text-[#EA580C] uppercase tracking-wider font-semibold">Mobile &amp; Field Device:</span>
               <ul class="mt-1 space-y-1 text-gray-300">
                 {gearList.mobile.map(m => <li><span class="text-[#EA580C]">—</span> {m}</li>)}
@@ -934,17 +934,17 @@ try {
     <section id="kontak" class="max-w-6xl mx-auto px-6" style="content-visibility:auto;contain-intrinsic-size:auto 700px">
       <div class="bg-[#1C1917] text-[#FBFBF9] p-8 md:p-16 border border-[#1C1917] grid grid-cols-1 lg:grid-cols-12 gap-12" data-reveal="fade-up">
         
-        <div class="lg:col-span-5 space-y-6" data-reveal="slide-left">
-          <div class="space-y-2">
+        <div class="lg:col-span-5 space-y-6" data-reveal="slide-left" data-stagger="120">
+          <div class="space-y-2" data-reveal="fade-up">
             <div class="font-serif text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white lowercase">kontak.</div>
             <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C] block">Mulai Kolaborasi</span>
             <h2 class="font-serif text-3xl md:text-4xl font-normal text-white">Mari Bekerja Sama.</h2>
           </div>
-          <p class="text-gray-400 text-sm leading-relaxed">
+          <p class="text-gray-400 text-sm leading-relaxed" data-reveal="fade-up">
             Terbuka untuk konsultasi promosi kesehatan, otomatisasi laporan surveilans, serta dokumentasi sinematik event olahraga/kampus.
           </p>
 
-          <div class="space-y-3 pt-4 text-xs font-mono text-gray-300">
+          <div class="space-y-3 pt-4 text-xs font-mono text-gray-300" data-reveal="fade-up">
             <div><span class="text-[#EA580C]">↳</span> Terbah, Pengasih, Kulon Progo, DIY</div>
             <div><span class="text-[#EA580C]">→</span> WA: <a href="https://wa.me/6285717225399" class="text-[#EA580C] hover:underline">+62 857-1722-5399</a></div>
             <div><span class="text-[#EA580C]">→</span> Email: fadhilalwafie@gmail.com</div>
@@ -952,45 +952,53 @@ try {
           </div>
         </div>
 
-        <div class="lg:col-span-7" data-reveal="slide-right">
+        <div class="lg:col-span-7" data-reveal="slide-right" data-stagger="100">
           <form 
+            id="contact-form"
             name="contact" 
             method="POST" 
-            data-netlify="true" 
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
             class="space-y-6 font-mono text-xs"
           >
             <input type="hidden" name="form-name" value="contact" />
+            <!-- Honeypot anti-spam (hidden from humans) -->
+            <p class="hidden" aria-hidden="true">
+              <label>Don't fill this out: <input name="bot-field" /></label>
+            </p>
 
-            <div class="form-field">
+            <div class="form-field" data-reveal="fade-up">
               <input 
                 type="text" 
                 id="name" 
                 name="name" 
                 required 
                 placeholder=" "
-                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+                autocomplete="name"
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none transition-colors"
               />
               <label for="name">Nama Lengkap *</label>
             </div>
 
-            <div class="form-field">
+            <div class="form-field" data-reveal="fade-up">
               <input 
                 type="email" 
                 id="email" 
                 name="email" 
                 required 
                 placeholder=" "
-                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+                autocomplete="email"
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none transition-colors"
               />
               <label for="email">Alamat Email *</label>
             </div>
 
-            <div class="space-y-2">
+            <div class="space-y-2" data-reveal="fade-up">
               <label for="subject" class="block uppercase tracking-wider text-gray-300">Subjek Proyek / Peran *</label>
               <select 
                 id="subject" 
                 name="subject" 
-                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none transition-colors"
               >
                 <option value="Health Promotion">Konsultasi Promosi Kesehatan / K3</option>
                 <option value="Health-Tech">Implementasi SISE v2.4 / Health-Tech</option>
@@ -999,24 +1007,33 @@ try {
               </select>
             </div>
 
-            <div class="form-field">
+            <div class="form-field form-field-textarea" data-reveal="fade-up">
               <textarea 
                 id="message" 
                 name="message" 
                 rows="4" 
                 required 
                 placeholder=" "
-                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none"
+                class="w-full bg-gray-900 border border-gray-800 p-3 text-white focus:border-[#EA580C] focus:outline-none transition-colors"
               ></textarea>
               <label for="message">Pesan *</label>
             </div>
 
-            <button 
-              type="submit" 
-              class="w-full py-4 bg-[#EA580C] text-white uppercase tracking-widest font-bold hover:bg-white hover:text-[#1C1917] transition-all btn-submit btn-micro"
-            >
-              Kirim Pesan
-            </button>
+            <div data-reveal="fade-up">
+              <button 
+                type="submit" 
+                class="w-full py-4 bg-[#EA580C] text-white uppercase tracking-widest font-bold hover:bg-white hover:text-[#1C1917] transition-all btn-submit btn-micro"
+              >
+                <span class="btn-submit-text">Kirim Pesan</span>
+                <span class="btn-submit-loading hidden inline-flex items-center justify-center">
+                  <svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                  Mengirim...
+                </span>
+              </button>
+            </div>
+
+            <!-- Success / Error feedback -->
+            <div id="form-feedback" class="hidden" role="status" aria-live="polite"></div>
           </form>
         </div>
 
@@ -1026,17 +1043,45 @@ try {
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-[#E7E5E4] py-8 bg-[#FBFBF9] text-xs font-mono text-[#78716C]">
-    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-      <div>
-        © 2026 <strong class="text-[#1C1917]">Muhammad Fadhil Al Wafie (Walex)</strong>. Hak Cipta Dilindungi.
+  <footer class="border-t border-[#E7E5E4] bg-[#FBFBF9] text-xs font-mono text-[#78716C]" data-reveal="fade-up">
+    <div class="max-w-6xl mx-auto px-6 py-10 space-y-6">
+      <!-- Top row: branding + nav -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div class="space-y-1">
+          <a href="#" class="font-serif text-lg font-bold text-[#1C1917] hover:text-[#EA580C] transition-colors">
+            walex<span class="text-[#EA580C]">.</span>
+          </a>
+          <p class="text-[10px] text-[#78716C] max-w-xs leading-relaxed">
+            Promotor Kesehatan • Visual Storyteller • Health-Tech Builder
+          </p>
+        </div>
+        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-[#78716C]" aria-label="Footer navigation">
+          <a href="#peran" class="hover:text-[#EA580C] transition-colors">Peran</a>
+          <a href="#karya" class="hover:text-[#EA580C] transition-colors">Karya</a>
+          <a href="#tentang" class="hover:text-[#EA580C] transition-colors">Tentang</a>
+          <a href="#rekam-jejak" class="hover:text-[#EA580C] transition-colors">Galeri</a>
+          <a href="#kontak" class="hover:text-[#EA580C] transition-colors">Kontak</a>
+        </nav>
       </div>
-      <div class="flex items-center gap-4">
-        <a href={profile.contacts.lynkId} target="_blank" class="hover:text-[#EA580C]">Lynk.id</a>
-        <span>•</span>
-        <a href={profile.contacts.canva} target="_blank" class="hover:text-[#EA580C]">Canva Portfolio</a>
-        <span>•</span>
-        <a href="#" class="hover:text-[#EA580C]">Kembali ke Atas ↑</a>
+
+      <!-- Divider -->
+      <div class="border-t border-[#E7E5E4]"></div>
+
+      <!-- Bottom row: copyright + links + back to top -->
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div>
+          © 2026 <strong class="text-[#1C1917]">Muhammad Fadhil Al Wafie (Walex)</strong>. Hak Cipta Dilindungi.
+        </div>
+        <div class="flex items-center gap-4">
+          <a href={profile.contacts.lynkId} target="_blank" rel="noopener noreferrer" class="hover:text-[#EA580C] transition-colors">Lynk.id</a>
+          <span class="text-[#E7E5E4]">•</span>
+          <a href={profile.contacts.canva} target="_blank" rel="noopener noreferrer" class="hover:text-[#EA580C] transition-colors">Canva Portfolio</a>
+          <span class="text-[#E7E5E4]">•</span>
+          <a href="#" class="group inline-flex items-center gap-1 hover:text-[#EA580C] transition-colors">
+            Kembali ke Atas
+            <span class="inline-block transition-transform group-hover:-translate-y-1">↑</span>
+          </a>
+        </div>
       </div>
     </div>
   </footer>

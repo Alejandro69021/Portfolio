@@ -127,11 +127,11 @@ html.js .skill-bar-fill.is-revealed {
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  transition: clip-path 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: clip-path 600ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: clip-path;
   pointer-events: none;
 }
-/* Load start: photo hidden left, art hidden right */
+/* Load start: photo slides in from left (hidden off-left), art slides in from right (hidden off-right) */
 .hero-img-photo { clip-path: inset(0 100% 0 0); }
 .hero-img-art   { clip-path: inset(0 0 0 100%); }
 
@@ -148,33 +148,47 @@ html.js .skill-bar-fill.is-revealed {
     transparent 100%);
   pointer-events: none;
   z-index: 10;
-  transition: opacity 600ms ease;
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ── Joined: load animation complete (50/50 resting) */
+/* ── Joined: load animation complete (50/50 resting, State A) */
 .hero-joined .hero-img-photo {
   clip-path: inset(0 50% 0 0);
+  transition-duration: 900ms;
 }
 .hero-joined .hero-img-art {
   clip-path: inset(0 0 0 50%);
+  transition-duration: 900ms;
+}
+.hero-joined .hero-seam {
+  opacity: 1;
+  transition-delay: 600ms;
 }
 .hero-joined .hero-col-left,
 .hero-joined .hero-col-right {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 800ms;
+  transition-delay: 0ms;
+}
+/* Only during initial load animation, delay the column fade-in */
+.hero-loading.hero-joined .hero-col-left,
+.hero-loading.hero-joined .hero-col-right {
+  transition-delay: 750ms;
 }
 
-/* ── Hover LEFT col: art fills face, right text fades */
+/* ── Hover LEFT col: PHOTO fills face (photo = left identity), right text fades */
 #hero.hero-hover-left .hero-img-photo {
-  clip-path: inset(0 100% 0 0);
-  transition-duration: 600ms;
-}
-#hero.hero-hover-left .hero-img-art {
   clip-path: inset(0);
   transition-duration: 600ms;
+  transition-delay: 0ms;
 }
-#hero.hero-hover-left .hero-seam  { opacity: 0; }
+#hero.hero-hover-left .hero-img-art {
+  clip-path: inset(0 0 0 100%);
+  transition-duration: 600ms;
+  transition-delay: 0ms;
+}
+#hero.hero-hover-left .hero-seam  { opacity: 0; transition-delay: 0ms; }
 #hero.hero-hover-left .hero-col-right {
   opacity: 0.25;
   transform: translateY(0);
@@ -182,16 +196,18 @@ html.js .skill-bar-fill.is-revealed {
   transition-duration: 600ms;
 }
 
-/* ── Hover RIGHT col: photo fills face, left text fades */
+/* ── Hover RIGHT col: ART fills face (art = right identity), left text fades */
 #hero.hero-hover-right .hero-img-photo {
-  clip-path: inset(0);
+  clip-path: inset(0 100% 0 0);
   transition-duration: 600ms;
+  transition-delay: 0ms;
 }
 #hero.hero-hover-right .hero-img-art {
-  clip-path: inset(0 0 0 100%);
+  clip-path: inset(0);
   transition-duration: 600ms;
+  transition-delay: 0ms;
 }
-#hero.hero-hover-right .hero-seam { opacity: 0; }
+#hero.hero-hover-right .hero-seam { opacity: 0; transition-delay: 0ms; }
 #hero.hero-hover-right .hero-col-left {
   opacity: 0.25;
   transform: translateY(0);
@@ -362,6 +378,7 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 .form-field textarea:not(:placeholder-shown) ~ label,
 .form-field label.floated { top:0.35rem; font-size:0.6rem; color:var(--color-terracotta); transform:none; }
 .form-field input, .form-field textarea { padding-top:1.25rem; }
+.form-field-textarea label { top:1.25rem; transform:none; }
 .form-field input.invalid, .form-field textarea.invalid { border-color:#EF4444!important; animation:shake 0.3s var(--ease-out); }
 @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 
@@ -369,6 +386,12 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 .btn-submit { transition:background-color var(--dur-fast) ease,color var(--dur-fast) ease,transform var(--dur-fast) var(--ease-out); }
 .btn-submit.loading { pointer-events:none; opacity:0.7; }
 .btn-submit.success { background-color:#16a34a!important; color:white!important; }
+
+/* Form feedback messages */
+.form-feedback { padding:1rem 1.25rem; font-family:var(--font-mono); font-size:0.75rem; border-width:1px; border-style:solid; animation:feedback-in 400ms var(--ease-out) forwards; }
+.form-feedback-success { background-color:rgba(22,163,74,0.1); border-color:#16a34a; color:#4ade80; }
+.form-feedback-error { background-color:rgba(239,68,68,0.1); border-color:#ef4444; color:#fca5a5; }
+@keyframes feedback-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
 /* Image skeleton */
 .img-skeleton { background:linear-gradient(90deg,var(--color-line) 25%,#F5F4F2 50%,var(--color-line) 75%); background-size:200% 100%; animation:skeleton-shimmer 1.4s ease infinite; }
@@ -415,11 +438,11 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
     transition-delay: 0ms !important;
   }
   /* Allow hover/touch state overrides to work even in reduced-motion */
-  #hero.hero-hover-left .hero-img-photo { clip-path: inset(0 100% 0 0) !important; }
-  #hero.hero-hover-left .hero-img-art   { clip-path: inset(0) !important; }
+  #hero.hero-hover-left .hero-img-photo { clip-path: inset(0) !important; }
+  #hero.hero-hover-left .hero-img-art   { clip-path: inset(0 0 0 100%) !important; }
   #hero.hero-hover-left .hero-col-right { opacity: 0.25 !important; }
-  #hero.hero-hover-right .hero-img-photo { clip-path: inset(0) !important; }
-  #hero.hero-hover-right .hero-img-art   { clip-path: inset(0 0 0 100%) !important; }
+  #hero.hero-hover-right .hero-img-photo { clip-path: inset(0 100% 0 0) !important; }
+  #hero.hero-hover-right .hero-img-art   { clip-path: inset(0) !important; }
   #hero.hero-hover-right .hero-col-left  { opacity: 0.25 !important; }
   .hero-arrow-pulse { animation: none !important; }
   .card-hover:hover,
