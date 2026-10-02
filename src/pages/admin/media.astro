@@ -1,0 +1,10 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { MediaLibrary } from '../../components/admin/MediaLibrary';
+---
+
+<AdminLayout title="Media Library — Walex Admin" activeNav="media">
+  <MediaLibrary client:load />
+</AdminLayout>

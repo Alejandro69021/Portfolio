@@ -1,0 +1,128 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Login Admin — Walex Portfolio">
+  <div class="min-h-screen flex items-center justify-center p-6 bg-[#FBFBF9]">
+    <div class="w-full max-w-md bg-white border border-[#E7E5E4] p-8 md:p-10 shadow-sm space-y-8">
+      
+      <!-- Brand & Header -->
+      <div class="space-y-2 text-center">
+        <a href="/" class="font-serif text-3xl font-bold tracking-tight text-[#1C1917] inline-block hover:text-[#EA580C] transition-colors">
+          walex<span class="text-[#EA580C]">.</span>
+        </a>
+        <h1 class="font-serif text-2xl font-bold text-[#1C1917]">Portal Manajemen</h1>
+        <p class="text-xs font-mono text-[#78716C] uppercase tracking-wider">
+          Autentikasi Administrator
+        </p>
+      </div>
+
+      <!-- Error Alert Box -->
+      <div id="login-error" class="hidden p-3 bg-red-50 border border-red-200 text-red-700 text-xs font-mono">
+        <span id="login-error-text">Email atau kata sandi tidak valid.</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="admin-login-form" class="space-y-5 font-mono text-xs">
+        <div class="space-y-1.5">
+          <label for="email" class="block font-semibold uppercase tracking-wider text-[#1C1917]">
+            Email Admin
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="admin@domain.com"
+            class="w-full bg-[#FBFBF9] border border-[#E7E5E4] p-3 text-[#1C1917] focus:border-[#EA580C] focus:outline-none transition-colors"
+          />
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="password" class="block font-semibold uppercase tracking-wider text-[#1C1917]">
+            Kata Sandi
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            autocomplete="current-password"
+            placeholder="••••••••••••"
+            class="w-full bg-[#FBFBF9] border border-[#E7E5E4] p-3 text-[#1C1917] focus:border-[#EA580C] focus:outline-none transition-colors"
+          />
+        </div>
+
+        <button
+          type="submit"
+          id="login-submit-btn"
+          class="w-full py-3.5 bg-[#1C1917] text-[#FBFBF9] font-bold uppercase tracking-widest hover:bg-[#EA580C] transition-all btn-micro"
+        >
+          Masuk ke Dashboard
+        </button>
+      </form>
+
+      <div class="pt-4 border-t border-[#E7E5E4] text-center">
+        <a href="/" class="text-xs font-mono text-[#78716C] hover:text-[#EA580C] transition-colors">
+          ← Kembali ke Situs Publik
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('admin-login-form') as HTMLFormElement | null;
+    const errorBox = document.getElementById('login-error');
+    const errorText = document.getElementById('login-error-text');
+    const submitBtn = document.getElementById('login-submit-btn') as HTMLButtonElement | null;
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (errorBox) errorBox.classList.add('hidden');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Memverifikasi...';
+        }
+
+        const formData = new FormData(form);
+        const email = formData.get('email');
+        const password = formData.get('password');
+
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            if (errorText) errorText.textContent = data.error || 'Email atau kata sandi tidak valid.';
+            if (errorBox) errorBox.classList.remove('hidden');
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Masuk ke Dashboard';
+            }
+            return;
+          }
+
+          // Redirect to admin dashboard
+          window.location.href = data.redirect || '/admin';
+        } catch (err) {
+          if (errorText) errorText.textContent = 'Gagal menghubungi server. Periksa koneksi internet Anda.';
+          if (errorBox) errorBox.classList.remove('hidden');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Masuk ke Dashboard';
+          }
+        }
+      });
+    }
+  </script>
+</Layout>

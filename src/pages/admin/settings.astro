@@ -1,0 +1,10 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { SettingsManager } from '../../components/admin/SettingsManager';
+---
+
+<AdminLayout title="Pengaturan Situs — Walex Admin" activeNav="settings">
+  <SettingsManager client:load />
+</AdminLayout>

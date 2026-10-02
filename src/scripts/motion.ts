@@ -33,7 +33,7 @@ function initScrollProgress() {
 
 // ── M4: Navbar shrink on scroll ────────────────────────────────────────────
 function initNavbarShrink() {
-  const header = document.querySelector('header');
+  const header = document.getElementById('site-header');
   if (!header) return;
   const toggle = () => header.classList.toggle('scrolled', window.scrollY > 40);
   window.addEventListener('scroll', toggle, { passive: true });
@@ -42,7 +42,7 @@ function initNavbarShrink() {
 
 // ── M4: Scrollspy ──────────────────────────────────────────────────────────
 function initScrollspy() {
-  const navLinks = document.querySelectorAll<HTMLAnchorElement>('nav a[href^="#"]');
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('a.nav-link[href^="#"]');
   if (!navLinks.length) return;
 
   const sectionIds = Array.from(navLinks).map(a => a.getAttribute('href')!.slice(1));
@@ -55,10 +55,8 @@ function initScrollspy() {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           navLinks.forEach(a => a.classList.remove('nav-active'));
-          const link = document.querySelector<HTMLAnchorElement>(
-            `nav a[href="#${entry.target.id}"]`
-          );
-          link?.classList.add('nav-active');
+          document.querySelectorAll<HTMLAnchorElement>(`a.nav-link[href="#${entry.target.id}"]`)
+            .forEach(a => a.classList.add('nav-active'));
         }
       });
     },
@@ -231,9 +229,11 @@ function initGalleryFilter() {
       filterBtns.forEach(b => {
         b.classList.remove('bg-[#1C1917]', 'text-white');
         b.classList.add('bg-[#FBFBF9]', 'text-[#1C1917]');
+        b.setAttribute('aria-pressed', 'false');
       });
       btn.classList.remove('bg-[#FBFBF9]', 'text-[#1C1917]');
       btn.classList.add('bg-[#1C1917]', 'text-white');
+      btn.setAttribute('aria-pressed', 'true');
       applyFilter(btn.dataset.filter ?? 'all');
     });
   });
@@ -255,7 +255,10 @@ function initLightbox() {
   const visibleItems = () =>
     Array.from(galleryItems).filter(item => !item.classList.contains('flip-hidden') && item.style.display !== 'none');
 
-  const openModal = (item: HTMLElement) => {
+  let lastFocus: HTMLElement | null = null;
+
+  const openModal = (item: HTMLElement, trigger?: HTMLElement) => {
+    lastFocus = trigger ?? null;
     modalCat && (modalCat.textContent = item.dataset.category ?? '');
     modalTitle && (modalTitle.textContent = item.dataset.title ?? '');
     modalDesc && (modalDesc.textContent = item.dataset.desc ?? '');
@@ -275,6 +278,7 @@ function initLightbox() {
     setTimeout(() => {
       modal.classList.remove('flex');
       modal.classList.add('hidden');
+      lastFocus?.focus();
     }, 400);
     document.body.style.overflow = '';
   };
@@ -289,11 +293,13 @@ function initLightbox() {
   galleryItems.forEach(item => {
     item.setAttribute('tabindex', '0');
     item.setAttribute('role', 'button');
-    item.addEventListener('click', () => openModal(item));
-    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openModal(item); });
+    item.addEventListener('click', () => openModal(item, item as HTMLElement));
+    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(item, item as HTMLElement); } });
   });
 
   closeBtn?.addEventListener('click', closeModal);
+  document.getElementById('prev-modal')?.addEventListener('click', () => navigateModal(-1));
+  document.getElementById('next-modal')?.addEventListener('click', () => navigateModal(1));
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
   document.addEventListener('keydown', e => {
@@ -426,6 +432,56 @@ function initSiseModal() {
   });
 }
 
+// ── Hamburger mobile menu ───────────────────────────────────────────────────
+function initHamburger() {
+  const btn = document.getElementById('nav-hamburger');
+  const menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+
+  const toggle = (force?: boolean) => {
+    const open = force ?? btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Tutup menu navigasi' : 'Buka menu navigasi');
+    menu.setAttribute('aria-hidden', String(!open));
+    menu.classList.toggle('is-open', open);
+  };
+
+  btn.addEventListener('click', () => toggle());
+
+  // Close on mobile nav link click
+  menu.querySelectorAll<HTMLAnchorElement>('a.mobile-nav-link').forEach(a => {
+    a.addEventListener('click', () => toggle(false));
+  });
+
+  // Close on outside click
+  document.addEventListener('click', e => {
+    const header = document.getElementById('site-header');
+    if (header && !header.contains(e.target as Node) && btn.getAttribute('aria-expanded') === 'true') {
+      toggle(false);
+    }
+  });
+}
+
+// ── Smooth scroll anchor intercept (update URL hash without reload) ──────────
+function initSmoothScroll() {
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const hash = a.getAttribute('href')!;
+      if (hash === '#') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: prefersReduced() ? 'instant' : 'smooth' });
+        history.pushState(null, '', '#');
+        return;
+      }
+      const target = document.getElementById(hash.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: prefersReduced() ? 'instant' : 'smooth', block: 'start' });
+      history.pushState(null, '', hash);
+    });
+  });
+}
+
 // ── Bootstrap: run on every page (View Transitions compatible) ─────────────
 function boot() {
   initLoader();
@@ -442,6 +498,8 @@ function boot() {
   initImageSkeleton();
   initPieChart();
   initSiseModal();
+  initHamburger();
+  initSmoothScroll();
 }
 
 // Run on initial load AND after every Astro View Transition

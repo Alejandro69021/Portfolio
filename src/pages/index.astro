@@ -20,7 +20,7 @@ const defaultProfile = {
   contacts: {
     phone: "+6285717225399",
     emails: ["fadhilalwafie@gmail.com", "alexwafiefotografi@gmail.com"],
-    instagramPersonal: "https://instagram.com/wafiens_",
+    instagramPersonal: "https://www.instagram.com/wafiens_",
     instagramPortfolio: "https://instagram.com/le_fotoke",
     lynkId: "https://lynk.id/lefotoke.",
     canva: "https://www.canva.com/design/DAGRAICVpY/XRf9A9s9JuDUQsNsjguNcA/edit"
@@ -179,16 +179,22 @@ let galleryEvents = defaultGalleryEvents;
 let gearList = defaultGearList;
 let randomFacts = defaultRandomFacts;
 let eventCategories: string[] = ['Olahraga / Race', 'Kampus UNY', 'Medis'];
+let navPages: Array<{ title: string; slug: string }> = [];
 
 try {
   const supabase = getPublicSupabase();
 
-  const [settingsRes, projectsRes, eventsRes, categoriesRes] = await Promise.all([
+  const [settingsRes, projectsRes, eventsRes, categoriesRes, navPagesRes] = await Promise.all([
     supabase.from('site_settings').select('data').eq('id', 1).maybeSingle(),
     supabase.from('projects').select('*').eq('status', 'published').order('sort_order', { ascending: true }),
     supabase.from('events').select('*, event_categories(name)').eq('status', 'published').order('sort_order', { ascending: true }),
-    supabase.from('event_categories').select('name').order('sort_order', { ascending: true })
+    supabase.from('event_categories').select('name').order('sort_order', { ascending: true }),
+    supabase.from('pages').select('title, slug').eq('status', 'published').eq('show_in_nav', true).order('nav_order', { ascending: true })
   ]);
+
+  if (navPagesRes?.data) {
+    navPages = navPagesRes.data;
+  }
 
   // Site Settings
   if (settingsRes?.data?.data) {
@@ -249,31 +255,87 @@ try {
 
 <Layout title="Muhammad Fadhil Al Wafie (Walex) — Portfolio Editorial">
   
-  <!-- HEADER / NAVIGATION -->
-  <header class="sticky top-0 z-40 bg-[#FBFBF9]/90 backdrop-blur-md border-b border-[#E7E5E4] transition-all">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="#" class="font-serif text-2xl font-bold tracking-tight text-[#1C1917] hover:text-[#EA580C] transition-colors">
+  <!-- HEADER / NAVIGATION (fixed) -->
+  <header id="site-header" class="fixed top-0 left-0 right-0 z-40 bg-[#FBFBF9]/90 backdrop-blur-md border-b border-[#E7E5E4] transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+      
+      <!-- Logo -->
+      <a href="#" aria-label="Kembali ke atas" class="font-serif text-2xl font-bold tracking-tight text-[#1C1917] hover:text-[#EA580C] transition-colors flex-shrink-0">
         walex<span class="text-[#EA580C]">.</span>
       </a>
-      
-      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-[#78716C]">
-        <a href="#karya" class="hover:text-[#1C1917] transition-colors">Karya</a>
-        <a href="#peran" class="hover:text-[#1C1917] transition-colors">Peran & Skill</a>
-        <a href="#tentang" class="hover:text-[#1C1917] transition-colors">Tentang & Gear</a>
-        <a href="#rekam-jejak" class="hover:text-[#1C1917] transition-colors">Galeri Event</a>
-        <a href="#kontak" class="hover:text-[#1C1917] transition-colors">Kontak</a>
+
+      <!-- Desktop Nav -->
+      <nav id="main-nav" class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-[#78716C]" aria-label="Navigasi utama">
+        <a href="#karya" class="nav-link hover:text-[#1C1917] transition-colors">Karya</a>
+        <a href="#peran" class="nav-link hover:text-[#1C1917] transition-colors">Peran &amp; Skill</a>
+        <a href="#tentang" class="nav-link hover:text-[#1C1917] transition-colors">Tentang &amp; Gear</a>
+        <a href="#rekam-jejak" class="nav-link hover:text-[#1C1917] transition-colors">Galeri Event</a>
+        {navPages.map((np) => (
+          <a href={`/p/${np.slug}`} class="hover:text-[#1C1917] transition-colors">
+            {np.title}
+          </a>
+        ))}
+        <a href="#kontak" class="nav-link hover:text-[#1C1917] transition-colors">Kontak</a>
       </nav>
 
-      <a href="#kontak" class="inline-flex items-center gap-2 px-4 py-2 border border-[#1C1917] text-xs font-mono uppercase tracking-wider text-[#1C1917] hover:bg-[#1C1917] hover:text-[#FBFBF9] transition-all">
-        Hubungi Saya
-      </a>
+      <!-- Right: social + CTA + hamburger -->
+      <div class="flex items-center gap-3">
+        <!-- Social icons (desktop) -->
+        <div class="hidden md:flex items-center gap-3 text-[#78716C]">
+          <a href={profile.contacts.instagramPersonal} target="_blank" rel="noopener noreferrer" aria-label="Instagram Portfolio" class="hover:text-[#EA580C] transition-colors text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href={`https://wa.me/${profile.contacts.phone.replace(/[^0-9]/g,'')}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="hover:text-[#EA580C] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </a>
+        </div>
+
+        <a href="#kontak" class="hidden md:inline-flex items-center gap-2 px-4 py-2 border border-[#1C1917] text-xs font-mono uppercase tracking-wider text-[#1C1917] hover:bg-[#1C1917] hover:text-[#FBFBF9] transition-all">
+          Hubungi Saya
+        </a>
+
+        <!-- Hamburger (mobile) -->
+        <button
+          id="nav-hamburger"
+          class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 focus:outline-none"
+          aria-label="Buka menu navigasi"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300 origin-center"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-[#1C1917] transition-all duration-300 origin-center"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobile-menu"
+      class="md:hidden hidden border-t border-[#E7E5E4] bg-[#FBFBF9]"
+      aria-hidden="true"
+    >
+      <nav class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm font-medium text-[#78716C]" aria-label="Navigasi mobile">
+        <a href="#karya" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Karya</a>
+        <a href="#peran" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Peran &amp; Skill</a>
+        <a href="#tentang" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Tentang &amp; Gear</a>
+        <a href="#rekam-jejak" class="nav-link mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">Galeri Event</a>
+        {navPages.map((np) => (
+          <a href={`/p/${np.slug}`} class="mobile-nav-link py-2 border-b border-[#E7E5E4] hover:text-[#EA580C] transition-colors">{np.title}</a>
+        ))}
+        <a href="#kontak" class="nav-link mobile-nav-link py-2 hover:text-[#EA580C] transition-colors">Kontak</a>
+        <div class="flex items-center gap-4 pt-2 text-[#78716C]">
+          <a href={profile.contacts.instagramPersonal} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:text-[#EA580C] transition-colors text-xs font-mono">@wafiens_</a>
+          <a href={`https://wa.me/${profile.contacts.phone.replace(/[^0-9]/g,'')}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="hover:text-[#EA580C] transition-colors text-xs font-mono">WhatsApp</a>
+        </div>
+      </nav>
     </div>
   </header>
 
-  <main class="space-y-24 md:space-y-32 pb-24">
+  <main class="space-y-24 md:space-y-32 pb-24 pt-[72px]">
     
     <!-- HERO SECTION -->
-    <section class="max-w-6xl mx-auto px-6 pt-16 md:pt-24 space-y-10">
+    <section id="hero" class="max-w-6xl mx-auto px-6 pt-16 md:pt-24 space-y-10">
       <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#E7E5E4]/50 border border-[#E7E5E4] text-xs font-mono text-[#78716C] rounded-full">
         <span class="w-2 h-2 rounded-full bg-[#EA580C] animate-pulse"></span>
         Terbah, Pengasih, Kulon Progo, DIY
@@ -344,7 +406,7 @@ try {
     <section id="peran" class="max-w-6xl mx-auto px-6 reveal">
       <div class="space-y-4 mb-12">
         <span class="text-xs font-mono uppercase tracking-widest text-[#EA580C]">Identitas Tiga Lensa</span>
-        <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Konsep Hibrida Tiga Lensa Kebahlian</h2>
+        <h2 class="font-serif text-3xl md:text-5xl font-normal text-[#1C1917]">Konsep Hibrida Tiga Lensa Keahlian</h2>
         <p class="text-[#78716C] max-w-2xl">
           Arahkan kursor atau ketuk sektor diagram lingkaran di bawah untuk menjelajahi rincian peran dan kontribusi nyata saya.
         </p>
@@ -652,12 +714,12 @@ try {
       </div>
 
       <!-- Filter Buttons -->
-      <div class="flex flex-wrap gap-2 border-b border-[#E7E5E4] pb-4">
-        <button class="filter-btn active px-4 py-2 border border-[#1C1917] bg-[#1C1917] text-white text-xs font-mono uppercase transition-all" data-filter="all">
+      <div class="flex flex-wrap gap-2 border-b border-[#E7E5E4] pb-4" role="group" aria-label="Filter kategori galeri">
+        <button class="filter-btn active px-4 py-2 border border-[#1C1917] bg-[#1C1917] text-white text-xs font-mono uppercase transition-all" data-filter="all" aria-pressed="true">
           Semua Event
         </button>
         {eventCategories.map((cat) => (
-          <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter={cat}>
+          <button class="filter-btn px-4 py-2 border border-[#E7E5E4] bg-[#FBFBF9] text-[#1C1917] hover:border-[#1C1917] text-xs font-mono uppercase transition-all" data-filter={cat} aria-pressed="false">
             {cat}
           </button>
         ))}
@@ -805,7 +867,7 @@ try {
   </footer>
 
   <!-- MODAL LIGHTBOX GALLERIES -->
-  <div id="gallery-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4" aria-modal="true" role="dialog" aria-label="Detail Event">
+  <div id="gallery-modal" class="fixed inset-0 z-50 items-center justify-center p-4 hidden" aria-modal="true" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-desc">
     <!-- Backdrop -->
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" aria-hidden="true"></div>
     <!-- Content -->
@@ -833,13 +895,13 @@ try {
   </div>
 
   <!-- MODAL SIMULATOR SISE v2.4 -->
-  <div id="sise-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div id="sise-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="sise-modal-title" aria-label="Simulator SISE v2.4">
     <div class="bg-[#1C1917] text-[#FBFBF9] border border-gray-800 max-w-2xl w-full p-6 md:p-8 space-y-6 relative font-mono text-xs">
       <button id="close-sise-modal" class="absolute top-4 right-4 text-xl font-bold text-white hover:text-[#EA580C]">✕</button>
 
       <div class="space-y-1">
         <span class="text-[#EA580C] text-[10px] uppercase tracking-wider">ENTERPRISE SIMULATOR</span>
-        <h3 class="font-serif text-2xl text-white font-bold">SISE v2.4 Laporan Naratif Generator</h3>
+        <h3 id="sise-modal-title" class="font-serif text-2xl text-white font-bold">SISE v2.4 Laporan Naratif Generator</h3>
         <p class="text-gray-400 text-[11px]">Dinas Kesehatan Kabupaten Kulon Progo (Bidang P2P)</p>
       </div>
 

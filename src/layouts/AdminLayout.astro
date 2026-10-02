@@ -1,0 +1,134 @@
+---
+export const prerender = false;
+
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  activeNav?: 'dashboard' | 'projects' | 'jobs' | 'events' | 'pages' | 'media' | 'settings';
+}
+
+const { title = "Dashboard Admin — Walex Portfolio", activeNav = "dashboard" } = Astro.props;
+
+const navItems = [
+  { id: 'dashboard', label: 'Dashboard', href: '/admin', icon: '📊' },
+  { id: 'projects', label: 'Karya / Projects', href: '/admin/projects', icon: '💻' },
+  { id: 'jobs', label: 'Pengalaman / Jobs', href: '/admin/jobs', icon: '💼' },
+  { id: 'events', label: 'Galeri Event', href: '/admin/events', icon: '📸' },
+  { id: 'pages', label: 'Halaman Kustom', href: '/admin/pages', icon: '📄' },
+  { id: 'media', label: 'Media Library', href: '/admin/media', icon: '🖼️' },
+  { id: 'settings', label: 'Pengaturan Situs', href: '/admin/settings', icon: '⚙️' },
+];
+---
+
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body class="bg-[#FBFBF9] text-[#1C1917] antialiased font-sans min-h-screen flex flex-col md:flex-row">
+    
+    <!-- MOBILE TOPBAR -->
+    <header class="md:hidden bg-white border-b border-[#E7E5E4] px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+      <a href="/admin" class="font-serif text-xl font-bold tracking-tight text-[#1C1917]">
+        walex<span class="text-[#EA580C]">.</span> <span class="text-xs font-mono text-[#78716C] uppercase font-normal">Admin</span>
+      </a>
+      <button id="mobile-menu-btn" class="p-2 border border-[#E7E5E4] rounded text-[#1C1917] hover:border-[#EA580C] focus:outline-none" aria-label="Buka Menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- BACKDROP FOR MOBILE SIDEBAR -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="admin-sidebar" class="fixed md:sticky top-0 left-0 h-screen w-64 bg-white border-r border-[#E7E5E4] flex flex-col justify-between p-6 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out">
+      
+      <!-- Brand & Navigation -->
+      <div class="space-y-8">
+        <div class="flex items-center justify-between">
+          <a href="/admin" class="font-serif text-2xl font-bold tracking-tight text-[#1C1917] hover:text-[#EA580C] transition-colors">
+            walex<span class="text-[#EA580C]">.</span>
+            <span class="block text-[10px] font-mono font-normal uppercase text-[#78716C] tracking-widest mt-0.5">CMS Studio v2</span>
+          </a>
+          <button id="sidebar-close-btn" class="md:hidden text-[#78716C] hover:text-[#1C1917]" aria-label="Tutup Menu">✕</button>
+        </div>
+
+        <nav class="space-y-1 font-mono text-xs">
+          {navItems.map((item) => (
+            <a
+              href={item.href}
+              class={`flex items-center gap-3 px-3 py-2.5 transition-colors ${
+                activeNav === item.id
+                  ? 'bg-[#1C1917] text-[#FBFBF9] font-bold'
+                  : 'text-[#78716C] hover:bg-[#E7E5E4]/50 hover:text-[#1C1917]'
+              }`}
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div class="space-y-3 pt-6 border-t border-[#E7E5E4] font-mono text-xs">
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center justify-between px-3 py-2 text-[#78716C] hover:text-[#EA580C] hover:bg-[#E7E5E4]/30 transition-colors"
+        >
+          <span>↗ Lihat Web Publik</span>
+        </a>
+
+        <form action="/api/auth/logout" method="POST">
+          <button
+            type="submit"
+            class="w-full flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 transition-colors text-left"
+          >
+            <span>🚪</span>
+            <span>Keluar (Logout)</span>
+          </button>
+        </form>
+      </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 min-w-0 p-6 md:p-10 max-w-7xl mx-auto w-full">
+      <slot />
+    </main>
+
+    <script>
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const closeBtn = document.getElementById('sidebar-close-btn');
+      const sidebar = document.getElementById('admin-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+
+      function toggleSidebar(open: boolean) {
+        if (!sidebar || !backdrop) return;
+        if (open) {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        }
+      }
+
+      menuBtn?.addEventListener('click', () => toggleSidebar(true));
+      closeBtn?.addEventListener('click', () => toggleSidebar(false));
+      backdrop?.addEventListener('click', () => toggleSidebar(false));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { PageBuilder } from '../../components/admin/PageBuilder';
+---
+
+<AdminLayout title="Halaman Kustom — Walex Admin" activeNav="pages">
+  <PageBuilder client:load />
+</AdminLayout>

@@ -1,0 +1,152 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createSupabaseServerClient } from '../../lib/supabase/server';
+
+const supabase = createSupabaseServerClient(Astro);
+
+const [projectsRes, jobsRes, eventsRes, mediaRes, draftProjectsRes] = await Promise.all([
+  supabase.from('projects').select('id, status', { count: 'exact' }),
+  supabase.from('jobs').select('id', { count: 'exact' }),
+  supabase.from('events').select('id', { count: 'exact' }),
+  supabase.from('media').select('id', { count: 'exact' }),
+  supabase.from('projects').select('id, title, updated_at').eq('status', 'draft').limit(5),
+]);
+
+const totalProjects = projectsRes.count || 0;
+const totalJobs = jobsRes.count || 0;
+const totalEvents = eventsRes.count || 0;
+const totalMedia = mediaRes.count || 0;
+const draftProjects = draftProjectsRes.data || [];
+---
+
+<AdminLayout title="Dashboard — Walex Admin" activeNav="dashboard">
+  <div class="space-y-8 font-mono text-xs">
+    
+    <!-- Welcome Header -->
+    <div class="border-b border-[#E7E5E4] pb-6">
+      <span class="text-[#EA580C] uppercase tracking-widest text-[10px] font-bold">Studio Kontrol</span>
+      <h1 class="font-serif text-3xl md:text-4xl font-bold text-[#1C1917] mt-1">
+        Ringkasan &amp; Dashboard
+      </h1>
+      <p class="text-[#78716C] mt-2 max-w-xl text-xs font-sans">
+        Selamat datang di CMS Studio Walex Portfolio. Perubahan yang Anda publikasikan di sini akan tampil di situs publik dalam waktu kurang dari 60 detik.
+      </p>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white border border-[#E7E5E4] p-5 space-y-1">
+        <span class="text-[10px] uppercase text-[#78716C] tracking-wider">Total Karya</span>
+        <div class="font-serif text-3xl font-bold text-[#1C1917]">{totalProjects}</div>
+        <a href="/admin/projects" class="text-[10px] text-[#EA580C] hover:underline block pt-2">
+          Kelola Karya →
+        </a>
+      </div>
+
+      <div class="bg-white border border-[#E7E5E4] p-5 space-y-1">
+        <span class="text-[10px] uppercase text-[#78716C] tracking-wider">Pengalaman / Jobs</span>
+        <div class="font-serif text-3xl font-bold text-[#1C1917]">{totalJobs}</div>
+        <a href="/admin/jobs" class="text-[10px] text-[#EA580C] hover:underline block pt-2">
+          Kelola Riwayat →
+        </a>
+      </div>
+
+      <div class="bg-white border border-[#E7E5E4] p-5 space-y-1">
+        <span class="text-[10px] uppercase text-[#78716C] tracking-wider">Galeri Event</span>
+        <div class="font-serif text-3xl font-bold text-[#1C1917]">{totalEvents}</div>
+        <a href="/admin/events" class="text-[10px] text-[#EA580C] hover:underline block pt-2">
+          Kelola Event →
+        </a>
+      </div>
+
+      <div class="bg-white border border-[#E7E5E4] p-5 space-y-1">
+        <span class="text-[10px] uppercase text-[#78716C] tracking-wider">Media Library</span>
+        <div class="font-serif text-3xl font-bold text-[#1C1917]">{totalMedia}</div>
+        <a href="/admin/media" class="text-[10px] text-[#EA580C] hover:underline block pt-2">
+          Buka Library →
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Actions & Drafts -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+      
+      <!-- Quick Action Cards -->
+      <div class="md:col-span-5 space-y-4">
+        <h2 class="font-serif font-bold text-lg text-[#1C1917]">Aksi Cepat</h2>
+        
+        <div class="space-y-2">
+          <a
+            href="/admin/projects"
+            class="block p-4 bg-white border border-[#E7E5E4] hover:border-[#EA580C] transition-all group"
+          >
+            <div class="font-bold text-[#1C1917] group-hover:text-[#EA580C] flex justify-between">
+              <span>+ Tambah / Edit Project</span>
+              <span>→</span>
+            </div>
+            <p class="text-[11px] text-[#78716C] mt-1 font-sans">
+              Terbitkan studi kasus health-tech, link live app, dan fitur baru.
+            </p>
+          </a>
+
+          <a
+            href="/admin/events"
+            class="block p-4 bg-white border border-[#E7E5E4] hover:border-[#EA580C] transition-all group"
+          >
+            <div class="font-bold text-[#1C1917] group-hover:text-[#EA580C] flex justify-between">
+              <span>+ Tambah Dokumentasi Event</span>
+              <span>→</span>
+            </div>
+            <p class="text-[11px] text-[#78716C] mt-1 font-sans">
+              Dokumentasi lari race, kampus UNY, dan kegiatan medis.
+            </p>
+          </a>
+
+          <a
+            href="/admin/media"
+            class="block p-4 bg-white border border-[#E7E5E4] hover:border-[#EA580C] transition-all group"
+          >
+            <div class="font-bold text-[#1C1917] group-hover:text-[#EA580C] flex justify-between">
+              <span>🖼️ Upload Banyak Gambar</span>
+              <span>→</span>
+            </div>
+            <p class="text-[11px] text-[#78716C] mt-1 font-sans">
+              Otomatis dikonversi ke WebP terkompresi &lt; 400KB di browser.
+            </p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Draft Status Monitor -->
+      <div class="md:col-span-7 space-y-4">
+        <h2 class="font-serif font-bold text-lg text-[#1C1917]">Draf Belum Terbit</h2>
+        
+        <div class="bg-white border border-[#E7E5E4] p-5 space-y-3">
+          {draftProjects.length === 0 ? (
+            <div class="text-[#78716C] py-4 text-center">
+              ✓ Semua konten project saat ini berstatus terbit (Published).
+            </div>
+          ) : (
+            <div class="divide-y divide-[#E7E5E4]">
+              {draftProjects.map((p) => (
+                <div class="py-2.5 flex items-center justify-between">
+                  <div>
+                    <span class="font-bold text-[#1C1917]">{p.title}</span>
+                    <span class="ml-2 px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px]">Draft</span>
+                  </div>
+                  <a href="/admin/projects" class="text-[#EA580C] hover:underline text-[11px]">
+                    Edit &amp; Terbitkan →
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</AdminLayout>
