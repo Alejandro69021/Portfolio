@@ -226,19 +226,46 @@ function initHero() {
 
   // 2. Hover/touch helpers — toggle class on #hero so CSS handles all visuals
   let currentSide: 'left' | 'right' | null = null;
+  let hoverRaf = 0;
   const setHover = (side: 'left' | 'right' | null) => {
+    if (side === currentSide) return; // no-op if same
     currentSide = side;
     heroSection.classList.remove('hero-hover-left', 'hero-hover-right');
     if (side) heroSection.classList.add(`hero-hover-${side}`);
   };
 
-  // Desktop: mouseenter / mouseleave on each text column
-  colLeft?.addEventListener('mouseenter',  () => setHover('left'));
-  colLeft?.addEventListener('mouseleave',  () => setHover(null));
-  colRight?.addEventListener('mouseenter', () => setHover('right'));
-  colRight?.addEventListener('mouseleave', () => setHover(null));
+  // Desktop: section-level mousemove — divide hero into thirds
+  // Left third → hover-left, right third → hover-right, middle → neutral
+  // This avoids any z-index / overlap issues from child elements
+  const handleHeroMouseMove = (e: MouseEvent) => {
+    if (window.innerWidth < 1024) return; // only on desktop (lg breakpoint)
+    cancelAnimationFrame(hoverRaf);
+    hoverRaf = requestAnimationFrame(() => {
+      const rect = heroSection.getBoundingClientRect();
+      const relX = e.clientX - rect.left;
+      const w    = rect.width;
+      // zones: 0–35% = left, 35–65% = neutral/center, 65–100% = right
+      if (relX < w * 0.35) {
+        setHover('left');
+      } else if (relX > w * 0.65) {
+        setHover('right');
+      } else {
+        setHover(null);
+      }
+    });
+  };
 
-  // Touch / Click toggle helper: toggles side or resets if already selected
+  heroSection.addEventListener('mousemove', handleHeroMouseMove);
+  heroSection.addEventListener('mouseleave', () => {
+    cancelAnimationFrame(hoverRaf);
+    setHover(null);
+  });
+
+  // Also keep direct column mouseenter as instant fallback (belt+suspenders)
+  colLeft?.addEventListener('mouseenter',  () => setHover('left'));
+  colRight?.addEventListener('mouseenter', () => setHover('right'));
+
+  // Touch / Click toggle helper
   const toggleSide = (side: 'left' | 'right') => {
     if (currentSide === side) {
       setHover(null);
