@@ -666,6 +666,9 @@ function initContactForm() {
   const btnLoading = form.querySelector<HTMLElement>('.btn-submit-loading');
   const feedback = document.getElementById('form-feedback');
 
+  // Ensure initial state is correct regardless of CSS cascade
+  if (btnLoading) btnLoading.style.display = 'none';
+
   // Floating labels
   form.querySelectorAll<HTMLElement>('.form-field input, .form-field textarea').forEach(el => {
     const label = el.closest('.form-field')?.querySelector('label');
@@ -692,8 +695,9 @@ function initContactForm() {
 
   const setLoading = (loading: boolean) => {
     if (btnSubmit) btnSubmit.disabled = loading;
-    btnText?.classList.toggle('hidden', loading);
-    btnLoading?.classList.toggle('hidden', !loading);
+    // Use style.display directly — avoids Tailwind 'hidden' vs 'inline-flex' cascade conflict
+    if (btnText)    btnText.style.display    = loading ? 'none' : '';
+    if (btnLoading) btnLoading.style.display = loading ? 'inline-flex' : 'none';
     btnSubmit?.classList.toggle('loading', loading);
   };
 
