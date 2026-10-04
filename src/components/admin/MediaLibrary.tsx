@@ -203,7 +203,7 @@ export function MediaLibrary() {
             onChange={(e) => handleFilesAdded((e.target as HTMLInputElement).files)}
           />
           <div class="space-y-2">
-            <span class="text-3xl">📤</span>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-[#78716C]">↑ Upload</span>
             <p class="font-bold text-[#1C1917]">Seret banyak gambar ke sini, atau klik untuk memilih berkas</p>
             <p class="text-[11px] text-[#78716C]">
               JPG, PNG, WebP • Dikonversi otomatis ke format WebP teroptimasi sebelum diunggah
@@ -324,7 +324,7 @@ export function MediaLibrary() {
       {usageWarning && (
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div class="bg-white border border-amber-400 max-w-md w-full p-6 space-y-4 shadow-xl">
-            <h3 class="font-serif text-lg font-bold text-amber-700">⚠️ Peringatan: Media Sedang Digunakan</h3>
+            <h3 class="font-serif text-lg font-bold text-amber-700">Peringatan: Media Sedang Digunakan</h3>
             <p class="text-[#1C1917]">{usageWarning.message}</p>
             <div class="bg-amber-50 p-3 border border-amber-200 text-[11px] space-y-1">
               {usageWarning.usages.map((u, i) => (

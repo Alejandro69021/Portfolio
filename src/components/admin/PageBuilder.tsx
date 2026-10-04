@@ -382,7 +382,7 @@ export function PageBuilder() {
                 onClick={() => setIsPreviewOpen(true)}
                 class="px-4 py-2 border border-[#1C1917] bg-white text-[#1C1917] font-bold hover:bg-[#FBFBF9]"
               >
-                👁️ Pratinjau
+                Pratinjau
               </button>
               <button
                 type="button"
@@ -396,7 +396,7 @@ export function PageBuilder() {
                 onClick={() => handleSave('published')}
                 class="px-5 py-2 bg-[#EA580C] text-white font-bold uppercase hover:bg-[#1C1917]"
               >
-                Publikasikan 🚀
+                Publikasikan
               </button>
             </div>
           </div>
@@ -553,42 +553,42 @@ export function PageBuilder() {
                 onClick={() => addBlock('image')}
                 class="px-2.5 py-1 bg-white/10 hover:bg-[#EA580C] text-[11px] transition-colors"
               >
-                🖼️ Gambar
+                [ ] Gambar
               </button>
               <button
                 type="button"
                 onClick={() => addBlock('gallery')}
                 class="px-2.5 py-1 bg-white/10 hover:bg-[#EA580C] text-[11px] transition-colors"
               >
-                📸 Galeri Foto
+                [ ] Galeri
               </button>
               <button
                 type="button"
                 onClick={() => addBlock('project_grid')}
                 class="px-2.5 py-1 bg-white/10 hover:bg-[#EA580C] text-[11px] transition-colors"
               >
-                💻 Grid Karya
+                &lt;&gt; Grid Karya
               </button>
               <button
                 type="button"
                 onClick={() => addBlock('job_timeline')}
                 class="px-2.5 py-1 bg-white/10 hover:bg-[#EA580C] text-[11px] transition-colors"
               >
-                💼 Timeline Job
+                — Timeline
               </button>
               <button
                 type="button"
                 onClick={() => addBlock('video_embed')}
                 class="px-2.5 py-1 bg-white/10 hover:bg-[#EA580C] text-[11px] transition-colors"
               >
-                🎬 Video Embed
+                ▶ Video
               </button>
               <button
                 type="button"
                 onClick={() => addBlock('cta')}
                 class="px-2.5 py-1 bg-white/10 hover:bg-[#EA580C] text-[11px] transition-colors"
               >
-                ⚡ Tombol CTA
+                → Tombol CTA
               </button>
               <button
                 type="button"

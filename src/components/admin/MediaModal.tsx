@@ -216,7 +216,7 @@ export function MediaModal({ isOpen, onClose, onSelect }: MediaModalProps) {
                   </div>
                 ) : (
                   <div class="space-y-2">
-                    <span class="text-2xl">📁</span>
+                    <span class="font-mono text-[10px] uppercase tracking-widest text-[#78716C]">↑ Pilih File</span>
                     <p class="font-semibold text-[#1C1917]">Klik untuk pilih gambar atau seret file ke sini</p>
                     <p class="text-[10px] text-[#78716C]">PNG, JPG, WebP (Otomatis dikompres ke WebP &lt; 400KB)</p>
                   </div>

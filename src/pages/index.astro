@@ -245,7 +245,7 @@ try {
 
   // Projects (Karya)
   if (projectsRes?.data && projectsRes.data.length > 0) {
-    featuredProjects = projectsRes.data.map(p => {
+    featuredProjects = projectsRes.data.map((p: any) => {
       const isSim = Boolean(p.links?.interactiveSimulator || p.slug === 'sise-v2-4');
       const isHyprevent = p.slug.includes('hyprevent');
       const isCeritaku = p.slug.includes('ceritaku');
@@ -268,7 +268,7 @@ try {
 
   // Events (Galeri)
   if (eventsRes?.data && eventsRes.data.length > 0) {
-    galleryEvents = eventsRes.data.map(e => ({
+    galleryEvents = eventsRes.data.map((e: any) => ({
       title: e.title,
       roles: e.role || '',
       cat: (e.event_categories as any)?.name || 'Semua Event',
@@ -280,7 +280,7 @@ try {
   // Event Categories
   if (categoriesRes?.data && categoriesRes.data.length > 0) {
     eventCategories = categoriesRes.data
-      .map(c => c.name)
+      .map((c: any) => c.name)
       .filter((name: string) => name && name !== 'Semua Event');
   }
 } catch (err) {

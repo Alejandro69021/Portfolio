@@ -745,7 +745,7 @@ function initPieChart() {
         btn.classList.toggle('underline', isTarget);
       }
       if (btn.tagName === 'path') {
-        (btn as SVGPathElement).style.opacity = isTarget ? '1' : '0.85';
+        (btn as unknown as SVGPathElement).style.opacity = isTarget ? '1' : '0.85';
       }
     });
   };

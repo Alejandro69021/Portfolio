@@ -375,7 +375,7 @@ export function EventManager() {
                       </td>
                       <td class="p-4 text-[11px] text-[#78716C]">
                         <div>{ev.role || '-'}</div>
-                        <div class="text-[10px] text-[#1C1917]">📷 {ev.camera || '-'}</div>
+                        <div class="text-[10px] text-[#1C1917]">{ev.camera || '-'}</div>
                       </td>
                       <td class="p-4">
                         <button
