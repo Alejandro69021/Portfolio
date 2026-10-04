@@ -261,6 +261,20 @@ function initHero() {
     setHover(null);
   });
 
+  // Touch: tap-zone detection on #hero section (mirrors mousemove logic)
+  heroSection.addEventListener('touchstart', (e: TouchEvent) => {
+    const touch = e.touches[0];
+    const rect = heroSection.getBoundingClientRect();
+    const relX = touch.clientX - rect.left;
+    const w = rect.width;
+    if (relX < w * 0.35) {
+      setHover(currentSide === 'left' ? null : 'left');
+    } else if (relX > w * 0.65) {
+      setHover(currentSide === 'right' ? null : 'right');
+    }
+    // middle zone: do nothing on touch (let chip buttons handle it)
+  }, { passive: true });
+
   // Also keep direct column mouseenter as instant fallback (belt+suspenders)
   colLeft?.addEventListener('mouseenter',  () => setHover('left'));
   colRight?.addEventListener('mouseenter', () => setHover('right'));
@@ -633,12 +647,12 @@ function initLightbox() {
     }
   });
 
-  // Touch swipe inside modal
+  // Touch swipe inside modal — 40px threshold for better mobile sensitivity
   let touchX = 0;
   modal.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
   modal.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 50) navigateModal(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 40) navigateModal(dx < 0 ? 1 : -1);
   });
 }
 
@@ -861,9 +875,11 @@ function initHamburger() {
     if (open) {
       menu.classList.remove('hidden');
       menu.classList.add('is-open');
+      document.body.classList.add('scroll-locked'); // prevent background scroll on iOS
     } else {
       menu.classList.remove('is-open');
       menu.classList.add('hidden');
+      document.body.classList.remove('scroll-locked');
     }
   };
 

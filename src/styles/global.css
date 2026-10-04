@@ -250,6 +250,13 @@ html.js .skill-bar-fill.is-revealed {
 .hero-col-left, .hero-col-right {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* eliminate iOS 300ms tap delay */
+}
+/* Active press visual feedback on mobile */
+@media (pointer: coarse) {
+  .hero-col-left:active, .hero-col-right:active {
+    opacity: 0.85;
+  }
 }
 
 /* No-JS fallback */
@@ -343,6 +350,7 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
   scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch; /* momentum scrolling on iOS */
 }
 .drag-carousel.dragging {
   cursor: grabbing;
@@ -352,6 +360,11 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 /* Each card snaps at its start edge */
 .drag-carousel > * {
   scroll-snap-align: start;
+}
+/* On touch devices: reset cursor, no drag cursor needed */
+@media (pointer: coarse) {
+  .drag-carousel { cursor: default; }
+  .drag-carousel.dragging { cursor: default; }
 }
 
 /* Carousel card — explicit transitions only (no transition-all) */
@@ -376,6 +389,19 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 #gallery-modal.is-open { opacity:1; pointer-events:auto; }
 .lightbox-inner { transform:scale(0.94); opacity:0; transition:transform var(--dur-base) var(--ease-out),opacity var(--dur-base) var(--ease-out); }
 #gallery-modal.is-open .lightbox-inner { transform:scale(1); opacity:1; }
+/* Lightbox nav buttons: 44px tap target on mobile */
+#prev-modal, #next-modal {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+/* Close button tap target */
+#close-modal {
+  touch-action: manipulation;
+}
 
 /* Floating label form */
 .form-field { position:relative; }
@@ -389,6 +415,13 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 .form-field-textarea label { top:1.25rem; transform:none; }
 .form-field input.invalid, .form-field textarea.invalid { border-color:#EF4444!important; animation:shake 0.3s var(--ease-out); }
 @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+/* iOS: prevent auto-zoom on focus (input font-size must be ≥16px) */
+@media screen and (max-width: 768px) {
+  .form-field input,
+  .form-field textarea,
+  .form-field select,
+  form select { font-size: 16px !important; }
+}
 
 /* Form submit state */
 .btn-submit { transition:background-color var(--dur-fast) ease,color var(--dur-fast) ease,transform var(--dur-fast) var(--ease-out); }
@@ -413,6 +446,9 @@ nav a.nav-active::after { content:''; position:absolute; bottom:-2px; left:0; wi
 .loader-dot:nth-child(2){animation-delay:0.15s}
 .loader-dot:nth-child(3){animation-delay:0.30s}
 @keyframes loader-bounce { from{transform:translateY(0);opacity:0.4} to{transform:translateY(-10px);opacity:1} }
+
+/* Body scroll-lock when mobile menu is open */
+body.scroll-locked { overflow: hidden; }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar { width:6px; height:6px; }
