@@ -710,16 +710,40 @@ function initContactForm() {
     setLoading(true);
     feedback?.classList.add('hidden');
 
+    // Dev-mode bypass: Netlify Forms doesn't work on localhost
+    const isDevMode = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    if (isDevMode) {
+      // Simulate success in dev
+      setTimeout(() => {
+        setLoading(false);
+        btnSubmit?.classList.add('success');
+        if (btnText) btnText.textContent = '✓ Pesan Terkirim!';
+        showFeedback('success', '[Dev Mode] Form tidak terhubung ke Netlify di localhost. Di production akan terkirim normal.');
+        form.reset();
+        form.querySelectorAll<HTMLElement>('.form-field label').forEach(l => l.classList.remove('floated'));
+        setTimeout(() => {
+          btnSubmit?.classList.remove('success');
+          if (btnText) btnText.textContent = 'Kirim Pesan';
+        }, 4000);
+      }, 800);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
     try {
       const formData = new FormData(form);
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(formData as any).toString(),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (response.ok) {
-        setLoading(false);
         btnSubmit?.classList.add('success');
         if (btnText) btnText.textContent = '✓ Pesan Terkirim!';
         showFeedback('success', 'Terima kasih! Pesan Anda telah terkirim. Saya akan merespons dalam 1–2 hari kerja.');
@@ -735,9 +759,14 @@ function initContactForm() {
       } else {
         throw new Error(`Server responded with ${response.status}`);
       }
-    } catch {
+    } catch (err: unknown) {
+      clearTimeout(timeoutId);
+      const isAbort = err instanceof Error && err.name === 'AbortError';
+      showFeedback('error', isAbort
+        ? 'Waktu habis. Periksa koneksi internet dan coba lagi.'
+        : 'Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via WhatsApp.');
+    } finally {
       setLoading(false);
-      showFeedback('error', 'Gagal mengirim pesan. Silakan coba lagi atau hubungi langsung via WhatsApp.');
     }
   });
 }

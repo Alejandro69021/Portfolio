@@ -497,22 +497,6 @@ try {
 
       </div>
 
-      <!-- Scroll Down Button -->
-      <div class="pt-6 pb-4 flex flex-col items-center justify-center text-center relative z-10">
-        <a
-          href="#peran"
-          id="hero-scroll-down"
-          class="group inline-flex flex-col items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#78716C] hover:text-[#EA580C] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C] p-2 rounded"
-          aria-label="Scroll ke bagian Peran & Skill"
-        >
-          <span class="tracking-widest">Jelajahi Lebih Lanjut</span>
-          <span class="w-9 h-9 rounded-full border border-[#E7E5E4] group-hover:border-[#EA580C] flex items-center justify-center transition-all duration-300 hero-arrow-pulse group-hover:translate-y-1 bg-[#FBFBF9]/80 backdrop-blur-sm shadow-sm">
-            <svg class="w-4 h-4 text-[#1C1917] group-hover:text-[#EA580C] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </span>
-        </a>
-      </div>
     </section>
 
     <!-- HORIZONTAL PHOTO STRIP with drag-carousel -->
@@ -1034,45 +1018,23 @@ try {
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-[#E7E5E4] bg-[#FBFBF9] text-xs font-mono text-[#78716C]" data-reveal="fade-up">
-    <div class="max-w-6xl mx-auto px-6 py-10 space-y-6">
-      <!-- Top row: branding + nav -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-        <div class="space-y-1">
-          <a href="#" class="font-serif text-lg font-bold text-[#1C1917] hover:text-[#EA580C] transition-colors">
-            walex<span class="text-[#EA580C]">.</span>
-          </a>
-          <p class="text-[10px] text-[#78716C] max-w-xs leading-relaxed">
-            Promotor Kesehatan • Visual Storyteller • Health-Tech Builder
-          </p>
-        </div>
-        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-[#78716C]" aria-label="Footer navigation">
-          <a href="#peran" class="hover:text-[#EA580C] transition-colors">Peran</a>
-          <a href="#karya" class="hover:text-[#EA580C] transition-colors">Karya</a>
-          <a href="#tentang" class="hover:text-[#EA580C] transition-colors">Tentang</a>
-          <a href="#rekam-jejak" class="hover:text-[#EA580C] transition-colors">Galeri</a>
-          <a href="#kontak" class="hover:text-[#EA580C] transition-colors">Kontak</a>
-        </nav>
+  <footer class="border-t border-[#E7E5E4] bg-[#FBFBF9] text-xs font-mono text-[#78716C]">
+    <div class="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <a href="#" class="font-serif text-sm font-bold text-[#1C1917] hover:text-[#EA580C] transition-colors">
+          walex<span class="text-[#EA580C]">.</span>
+        </a>
+        <span class="text-[#E7E5E4]">—</span>
+        <span>© 2026 Muhammad Fadhil Al Wafie. Hak Cipta Dilindungi.</span>
       </div>
-
-      <!-- Divider -->
-      <div class="border-t border-[#E7E5E4]"></div>
-
-      <!-- Bottom row: copyright + links + back to top -->
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div>
-          © 2026 <strong class="text-[#1C1917]">Muhammad Fadhil Al Wafie (Walex)</strong>. Hak Cipta Dilindungi.
-        </div>
-        <div class="flex items-center gap-4">
-          <a href={profile.contacts.lynkId} target="_blank" rel="noopener noreferrer" class="hover:text-[#EA580C] transition-colors">Lynk.id</a>
-          <span class="text-[#E7E5E4]">•</span>
-          <a href={profile.contacts.canva} target="_blank" rel="noopener noreferrer" class="hover:text-[#EA580C] transition-colors">Canva Portfolio</a>
-          <span class="text-[#E7E5E4]">•</span>
-          <a href="#" class="group inline-flex items-center gap-1 hover:text-[#EA580C] transition-colors">
-            Kembali ke Atas
-            <span class="inline-block transition-transform group-hover:-translate-y-1">↑</span>
-          </a>
-        </div>
+      <div class="flex items-center gap-4">
+        <a href={profile.contacts.lynkId} target="_blank" rel="noopener noreferrer" class="hover:text-[#EA580C] transition-colors">Lynk.id</a>
+        <span class="text-[#E7E5E4]">•</span>
+        <a href={profile.contacts.canva} target="_blank" rel="noopener noreferrer" class="hover:text-[#EA580C] transition-colors">Canva Portfolio</a>
+        <span class="text-[#E7E5E4]">•</span>
+        <a href="#" class="group inline-flex items-center gap-1 hover:text-[#EA580C] transition-colors">
+          Atas <span class="inline-block transition-transform group-hover:-translate-y-1">↑</span>
+        </a>
       </div>
     </div>
   </footer>
