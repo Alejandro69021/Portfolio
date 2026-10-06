@@ -1,19 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  <rect width="128" height="128" rx="28" fill="url(#grad)" />
-  <text
-    x="64"
-    y="82"
-    font-family="'Segoe UI', system-ui, Arial, sans-serif"
-    font-size="52"
-    font-weight="800"
-    text-anchor="middle"
-    fill="#ffffff"
-    letter-spacing="-2"
-  >WA</text>
+  <rect width="128" height="128" rx="28" fill="#0b0b0e" />
+  <g stroke="#ededed" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- W -->
+    <polyline points="15,22 29,106 43,58 57,106 70,22" />
+    <!-- A (No crossbar) -->
+    <polyline points="74,106 98,22 120,106" />
+  </g>
 </svg>
